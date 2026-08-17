@@ -29,8 +29,9 @@ that's the working-refresher framing doing its job — better to write down what
 currently believe and be correctable than to perform authority I don't have.
 
 The whole thing is backed by a real, small, running app in this repo
-(`app/backend`, `app/frontend`) — every snippet below is copied from code that
-actually runs, not staged for the page.
+(`app/backend`, `app/frontend`) — every snippet below is lifted from code that
+actually runs and passes its tests, occasionally trimmed to the lines under
+discussion, never invented for the page.
 
 ---
 
@@ -61,8 +62,8 @@ uv run fastapi dev         # serves on :8000, reloads on save
 
 ```json
 {
-  "dependencies": { "react": "^18.3.1", "react-dom": "^18.3.1" },
-  "devDependencies": { "vite": "^5.4.8", "typescript": "^5.5.4" }
+  "dependencies": { "react": "^19.2.8", "react-dom": "^19.2.8" },
+  "devDependencies": { "vite": "^8.2.1", "typescript": "^5.9.3", "vitest": "^4.1.10" }
 }
 ```
 
@@ -135,22 +136,43 @@ and the route signature and generates an interactive OpenAPI page from them,
 without a separate schema file to keep in sync.
 
 The thing worth naming here, because the code makes it concrete instead of
-abstract: Python's type hints (`id: int`, `str | None`) are not enforced by the
-interpreter. You can write `Item(id="not a number", ...)` in plain Python and
-nothing stops you at runtime — hints are documentation and a hook for external
-tools like mypy or pyright, checked before the code ever runs, not while it runs.
-Pydantic is what closes that gap here: it reads the same hints and turns them
-into an actual runtime contract at the API boundary. Send `/items` a payload
-that doesn't match `Item`, and Pydantic rejects it with a 422 before your
-function body even runs. That's a deliberate, opt-in choice, not a language
-default — which is very in character for Python's gradual-typing story: types
-are always optional, and how much they *do* depends entirely on what you bring
-in to enforce them.
+abstract: Python's type hints are not enforced by the interpreter. Write the
+same annotation on a plain class and nothing stops you at runtime —
 
-(If this were a full CRUD app with an admin panel and an ORM expected out of the
+```python
+class Plain:
+    def __init__(self, id: int):
+        self.id = id
+
+Plain(id="not a number").id    # 'not a number', no complaint
+```
+
+— because hints are documentation and a hook for external tools like mypy or
+pyright, checked before the code ever runs, not while it runs.
+
+Pydantic is what closes that gap. `Item` carries the identical annotations, but
+because it's a `BaseModel` those annotations became a runtime contract:
+`Item(id="not a number", name="x")` raises `ValidationError` on the spot. Same
+hints, same syntax, completely different enforcement — and the difference is a
+library you chose to import, not anything the language did for you.
+
+Worth being precise about where that contract actually sits on this endpoint,
+though, because it's easy to overclaim. `GET /items` takes no request body, so
+there's nothing incoming for Pydantic to reject — throw a malformed payload at
+it and you'll get a cheerful `200`, because the handler never asked for input.
+`response_model=list[Item]` guards the way *out*: it validates what the handler
+returns. The 422-on-bad-input story everyone tells about FastAPI is real, but it
+belongs to endpoints that declare a request body or typed query params. This one
+doesn't. That's very in character for Python's gradual-typing story: types are
+always optional, and how much they *do* depends entirely on what you bring in to
+enforce them — and on where you actually wired it in.
+
+/// aside | The road not taken: Django
+If this were a full CRUD app with an admin panel and an ORM expected out of the
 box, Django would be the batteries-included alternative to FastAPI's
 minimal-core-plus-libraries approach — worth knowing it exists, not worth a
-detour here.)
+detour here.
+///
 
 ---
 
@@ -174,12 +196,14 @@ export interface Item {
 import { useEffect, useState } from "react";
 import type { Item } from "./types";
 
+const API_URL = "http://localhost:8000/items";
+
 export function ItemList() {
   const [items, setItems] = useState<Item[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("http://localhost:8000/items")
+    fetch(API_URL)
       .then((response) => {
         if (!response.ok) throw new Error(`Request failed: ${response.status}`);
         return response.json();
@@ -223,10 +247,26 @@ keeps its type information around specifically so it can enforce it while the
 program is running. Same-looking type declaration, two completely different
 lifetimes.
 
-(Vue's single-file components or Svelte's compiler-driven approach would express
+/// aside | The road not taken: Vue and Svelte
+Vue's single-file components or Svelte's compiler-driven approach would express
 this same list with noticeably less boilerplate than React's hooks — worth
 knowing they exist if `useEffect` ever starts to feel like the tax rather than
-the tool.)
+the tool.
+///
+
+/// aside | The elephant: Next.js
+It's the more common starting point than plain Vite + React these days, so it
+deserves naming rather than a footnote. Next.js is React plus a framework's
+worth of opinions — file-based routing, and server components that fetch
+`/items` during render on the server instead of from `useEffect` in the
+browser.
+
+That last part quietly erases the boundary this zine draws in the next
+section, because the "client" fetching the data is now Next's own server, not
+a stranger's browser. Which is exactly why it's out of scope here: this zine
+is about the seam between two separate processes, and Next.js's whole pitch is
+blurring that seam. Worth knowing what it's blurring before you reach for it.
+///
 
 ---
 
@@ -239,6 +279,36 @@ What's actually wired up, in `ItemList.tsx` above, is REST: a plain `GET
 /items` returning the full list, fetched with the browser's native `fetch`.
 For a single flat resource like this, that's the right, boring choice — but
 it's worth being honest about why, and where it stops being the right choice.
+
+First, though, the thing that actually breaks before any of that becomes
+relevant. Wire the two dev servers together exactly as written above and the
+request fails — not on the shape of the data, on permission to ask for it at
+all. `:5173` and `:8000` are different origins, so the browser refuses to hand
+the response to my JavaScript unless the server explicitly says that origin is
+allowed. The fix is four lines the backend section quietly skipped over:
+
+```python
+# app/main.py
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["GET"],
+)
+```
+
+That's worth more than a troubleshooting footnote, because it's this zine's
+whole thesis compressed into one error message. `curl localhost:8000/items`
+works and always did — curl has no origin, no other tabs, nobody to protect. The
+identical request from a browser is refused, because a browser is executing code
+from strangers next to my logged-in sessions, and same-origin policy is the rule
+that keeps one tab from reading another's data. Nothing about the data changed.
+The *caller* changed, and the caller's threat model came with it. Business in
+the back, party in the front: the party is the part where untrusted code runs on
+someone else's machine, and this is the bouncer.
+
+With that out of the way, the actual REST-versus-GraphQL tradeoffs.
 
 **Over/under-fetching.** REST's `Item` response ships every field —
 `description`, `tags`, `in_stock` — whether the component uses all of them or
@@ -271,11 +341,14 @@ first place.
 None of this makes GraphQL wrong — it makes it a trade against a specific kind
 of complexity (nested, over-fetched, multi-consumer data) that this feature
 doesn't have yet. For one endpoint returning one flat list to one frontend,
-REST is the honest choice, not the naive one. (If neither side needs a
-client-rendered app at all — if the whole page could be server-rendered and
-just swap in the new list — HTMX is worth a mention: it gets you dynamic
-updates over plain HTTP without a JSON API or a frontend framework in the loop
-at all.)
+REST is the honest choice, not the naive one.
+
+/// aside | The road not taken: HTMX
+If neither side needs a client-rendered app at all — if the whole page could be
+server-rendered and just swap in the new list — HTMX is worth a mention: it
+gets you dynamic updates over plain HTTP without a JSON API or a frontend
+framework in the loop at all.
+///
 
 ---
 
@@ -299,6 +372,14 @@ def test_list_items_returns_all_items():
     items = response.json()
     assert len(items) == 3
     assert items[0]["name"] == "Enamel mug"
+
+
+def test_list_items_matches_the_item_shape():
+    response = client.get("/items")
+    item = response.json()[0]
+
+    assert set(item.keys()) == {"id", "name", "description", "tags", "in_stock"}
+    assert isinstance(item["tags"], list)
 ```
 
 ```tsx
@@ -306,32 +387,54 @@ def test_list_items_returns_all_items():
 import { render, screen } from "@testing-library/react";
 import { ItemList } from "../src/ItemList";
 
+const items = [
+  { id: 1, name: "Enamel mug", description: null, tags: ["kitchen"], in_stock: true },
+  { id: 2, name: "Multitool", description: null, tags: [], in_stock: false },
+];
+
+beforeEach(() => {
+  globalThis.fetch = vi.fn().mockResolvedValue({
+    ok: true,
+    json: () => Promise.resolve(items),
+  } as unknown as Response);
+});
+
 test("renders a list item for each item returned by the API", async () => {
   render(<ItemList />);
 
   expect(await screen.findByText("Enamel mug")).toBeInTheDocument();
+  expect(screen.getByText("Multitool")).toBeInTheDocument();
 });
 ```
+
+The runner on the JavaScript side is Vitest, which is worth a sentence of
+justification since Jest is still the name most people reach for. This is a
+Vite project, and Vitest reads the same `vite.config.ts` the dev server does —
+one toolchain, one set of transform rules. Reaching for Jest instead means
+installing a second transform pipeline (`ts-jest`, a JSDOM environment, its own
+config) whose job is to re-derive what Vite already knows. The API is
+Jest-compatible either way, so nothing below changes shape; what changes is how
+many build systems you own.
 
 Watching both get written back to back says more than any callout would. pytest
 leans on the bare `assert` statement — `assert response.status_code == 200` —
 and gets a readable failure message anyway, because pytest rewrites the
 assertion at import time to capture the values on both sides of the comparison.
-There's no special assertion API to learn. Jest's culture runs the other way:
-`expect(x).toBeInTheDocument()`, chained matchers, one method per kind of check.
-Part of why is structural — JavaScript's test runners don't have an equivalent
-of pytest's import-time rewriting available to them, so the ecosystem built
+There's no special assertion API to learn. The JavaScript convention runs the
+other way: `expect(x).toBeInTheDocument()`, chained matchers, one method per
+kind of check. Part of why is structural — JS test runners don't have an
+equivalent of pytest's import-time assertion rewriting, so the ecosystem built
 expressiveness into chainable matcher objects instead of into the assert
 statement itself.
 
-The other thing that falls out of writing these side by side: Jest ships
-mocking as a first-class part of the runner itself — `jest.fn()` is right
-there, no import needed beyond Jest. Python's equivalent, `unittest.mock` (or
-`pytest-mock` on top of it), is a separate, more deliberate affair — you reach
-for `Mock()` or `@patch` explicitly, and it feels more like a tool you pick up
-than a feature the framework hands you by default. Neither is better; it's just
-a different default about how much mocking machinery a test file starts with
-for free.
+The other thing that falls out of writing these side by side: mocking ships as
+a first-class part of the runner — `vi.fn()` is just there, no import beyond
+the runner itself (`jest.fn()` in Jest; same idea, same ergonomics). Python's
+equivalent, `unittest.mock` (or `pytest-mock` on top of it), is a separate, more
+deliberate affair — you reach for `Mock()` or `@patch` explicitly, and it feels
+more like a tool you pick up than a feature the framework hands you by default.
+Neither is better; it's just a different default about how much mocking
+machinery a test file starts with for free.
 
 ---
 
@@ -365,7 +468,11 @@ tempt anyone. Python's async support is bolted on by comparison: `async def`,
 an event loop, and a real, load-bearing seam running through the entire
 ecosystem between sync and async code, plus a GIL that keeps even
 multi-threaded Python from running Python bytecode on more than one core at a
-time. FastAPI straddles that seam directly — it supports both `def` and `async
+time. (That last part is finally in motion: free-threaded builds landed
+experimentally in 3.13 and became officially supported in 3.14, which is what
+this repo runs on. Not the default yet, and the ecosystem is still catching up,
+but "Python has a GIL" is now a statement about which build you installed
+rather than about the language.) FastAPI straddles that seam directly — it supports both `def` and `async
 def` route handlers, and the failure mode is real: drop blocking, synchronous
 work into an `async def` handler and it stalls the *entire* event loop for
 every other request the process is serving, not just the one that made the

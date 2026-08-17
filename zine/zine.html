@@ -1,0 +1,1172 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Mullet Stack</title>
+<style>
+@font-face {
+  font-family: 'Lato Zine';
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+  src: url(data:font/woff2;base64,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) format('woff2');
+}
+/* The Mullet Stack — riso-printed fanzine.
+   Inlined into zine.html by build.py; re-run `uv run zine/build.py` after
+   editing. Code block colors come from Pygments, not from here.
+
+   Two spot colors, the way a real risograph zine prints: pink for the party
+   out front, blue for the business in the back. */
+
+:root {
+  --ink: #14110f;
+  --paper: #f2ede1;
+  --paper-2: #e7e0cf;
+  --rule: #c9c2b2;
+  --muted: #6b6558;
+  --party: #d81f63;   /* front / JavaScript */
+  --business: #1f5fd0; /* back / Python */
+
+  /* 'Lato Zine' is embedded by build.py as a data URI; the rest is
+     insurance for anyone opening a hand-edited copy. */
+  --display: "Lato Zine", Impact, "Haettenschweiler",
+             "Liberation Sans Narrow", "Arial Narrow", sans-serif;
+  --body: Georgia, "Bitstream Charter", "Liberation Serif", serif;
+  --mono: "Courier New", "DejaVu Sans Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 0 1.5em 6em;
+  font-family: var(--body);
+  font-size: 1.05em;
+  line-height: 1.62;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+/* ---- masthead ------------------------------------------------------- */
+
+/* Full-bleed ink band without the horizontal scrollbar that a -100vw
+   margin would cause: the shadow paints past the element, the clip-path
+   keeps it from spilling vertically. */
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  margin: 0 0 3em;
+  padding: 2.8em 0 2.2em;
+  box-shadow: 0 0 0 100vmax var(--ink);
+  clip-path: inset(0 -100vmax);
+}
+
+.masthead .title {
+  font-family: var(--display);
+  font-size: clamp(3rem, 13vw, 6.5rem);
+  font-weight: 900;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--party);
+}
+
+/* The second spot color earns its keep on the labels rather than smeared
+   across the wordmark — a gradient through wrapped display type just reads
+   as a smudge. */
+.masthead .byline strong,
+.contents h2 {
+  color: var(--business);
+}
+
+.masthead .subtitle {
+  font-family: var(--body);
+  font-size: 1.02em;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--paper);
+  max-width: 30em;
+  margin: 0.9em 0 0;
+}
+
+.masthead .byline {
+  font-family: var(--mono);
+  font-size: 0.72em;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #a49c8c;
+  margin: 1.6em 0 0;
+  padding-top: 1em;
+  border-top: 1px solid #3a3531;
+}
+
+/* ---- contents ------------------------------------------------------- */
+
+.contents {
+  border: 2px solid var(--ink);
+  border-top: 10px solid var(--business);
+  padding: 1.4em 1.6em;
+  margin-bottom: 4em;
+}
+
+.contents h2 {
+  font-family: var(--mono);
+  font-size: 0.72em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  border: none;
+  margin: 0 0 0.7em;
+  padding: 0;
+}
+
+.contents ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contents li + li {
+  margin-top: 0.28em;
+}
+
+.contents a {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.22em;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.contents a:hover,
+.contents a:focus {
+  color: var(--party);
+}
+
+/* ---- headings ------------------------------------------------------- */
+
+h1, h2, h3 {
+  font-family: var(--display);
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* Sections in zine.md are `#`; .title is the masthead and opts out. */
+h1:not(.title) {
+  font-size: clamp(2rem, 6vw, 2.9rem);
+  margin: 2.4em 0 0.7em;
+  padding-bottom: 0.12em;
+  border-bottom: 6px solid var(--ink);
+}
+
+h2 {
+  font-size: 1.5rem;
+  margin: 2em 0 0.6em;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin: 1.8em 0 0.5em;
+}
+
+/* ---- body ----------------------------------------------------------- */
+
+p {
+  margin: 0 0 1.15em;
+}
+
+/* Lead-in run-ins like **Caching.** read as stamped labels. */
+p > strong:first-child {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+em {
+  color: var(--party);
+  font-style: italic;
+}
+
+a {
+  color: var(--business);
+  text-underline-offset: 0.15em;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  background: var(--paper-2);
+  padding: 0.08em 0.28em;
+}
+
+/* ---- code blocks: photocopied printouts ----------------------------- */
+
+.highlight {
+  border: 2px solid var(--ink);
+  padding: 1em 1.1em;
+  margin: 0 0 1.6em;
+  overflow-x: auto;
+  font-size: 0.82em;
+  line-height: 1.5;
+}
+
+.highlight pre {
+  margin: 0;
+  font-family: var(--mono);
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* ---- asides: taped onto the page ------------------------------------ */
+
+.admonition {
+  position: relative;
+  background: var(--paper-2);
+  border-left: 6px solid var(--party);
+  padding: 1.2em 1.4em 0.5em;
+  margin: 2.2em 0;
+  font-size: 0.93em;
+  transform: rotate(-0.35deg);
+}
+
+.admonition + .admonition {
+  transform: rotate(0.3deg);
+}
+
+.admonition-title {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.15em;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--party);
+  margin: 0 0 0.5em;
+}
+
+.admonition p:last-child {
+  margin-bottom: 0.7em;
+}
+
+blockquote {
+  border-left: 4px solid var(--rule);
+  margin-left: 0;
+  padding-left: 1.2em;
+  color: var(--muted);
+  font-style: italic;
+}
+
+hr {
+  border: none;
+  border-top: 2px dashed var(--rule);
+  margin: 3.2em 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.92em;
+}
+
+th, td {
+  border: 1px solid var(--rule);
+  padding: 0.45em 0.7em;
+  text-align: left;
+}
+
+th {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--paper-2);
+}
+
+:focus-visible {
+  outline: 3px solid var(--party);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admonition,
+  .admonition + .admonition {
+    transform: none;
+  }
+}
+
+/* ---- phones ---------------------------------------------------------- */
+
+@media (max-width: 34em) {
+  body {
+    padding: 0 1.1em 4em;
+    font-size: 1em;
+    line-height: 1.58;
+  }
+
+  .masthead {
+    padding: 2em 0 1.6em;
+  }
+
+  .masthead .title {
+    font-size: 3.1rem;
+    line-height: 0.9;
+  }
+
+  .masthead .byline {
+    letter-spacing: 0.05em;
+    word-break: break-word;
+  }
+
+  .contents {
+    padding: 1.1em 1.2em;
+    margin-bottom: 2.8em;
+  }
+
+  .contents a {
+    font-size: 1.05em;
+  }
+
+  h1:not(.title) {
+    margin-top: 1.6em;
+    border-bottom-width: 4px;
+  }
+
+  /* Sideways-scrolling code is miserable on a phone. Wrap instead, with a
+     hanging indent so continuation lines stay visibly subordinate. */
+  .highlight {
+    padding: 0.8em 0.9em;
+    font-size: 0.76em;
+  }
+
+  .highlight pre,
+  .highlight code {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  .highlight pre {
+    padding-left: 1.4em;
+    text-indent: -1.4em;
+  }
+
+  .admonition {
+    padding: 1em 1.1em 0.4em;
+    margin: 1.8em 0;
+  }
+
+  /* Tilted boxes overhang the narrow viewport; sit them straight. */
+  .admonition,
+  .admonition + .admonition {
+    transform: none;
+  }
+}
+
+/* ---- dark: the same zine, photocopied onto black -------------------- */
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #ece6d8;
+    --paper: #14130f;
+    --paper-2: #201e18;
+    --rule: #423e35;
+    --muted: #9a9382;
+    --party: #ff5c93;
+    --business: #6f9dff;
+  }
+
+  .masthead {
+    background: #000;
+    color: var(--ink);
+    /* --ink is light here, so the bleed has to be pinned to the band. */
+    box-shadow: 0 0 0 100vmax #000;
+  }
+
+  .masthead .subtitle { color: var(--ink); }
+  .masthead .byline { color: var(--muted); border-top-color: #2e2a24; }
+}
+
+/* ---- paper ---------------------------------------------------------- */
+
+@page {
+  size: A4;
+  margin: 16mm 15mm;
+}
+
+@media print {
+  /* The spot colors stay: "print" is usually Save as PDF, read on a screen.
+     On a mono printer they drop to grey, which still reads fine. */
+  :root {
+    --ink: #000;
+    --paper: #fff;
+    --paper-2: #f0ece2;
+    --rule: #9a9382;
+  }
+
+  body {
+    max-width: none;
+    padding: 0;
+    font-size: 10.5pt;
+  }
+
+  /* Page one is a cover, not a page header: keep the ink band, let it run
+     to the paper's edge, and give it the page to itself. */
+  /* An inset panel rather than a bled one: the reader picks their own
+     margins in the print dialog, so anything depending on exact bleed
+     breaks half the time. Sized to its content so the contents list and
+     the first section follow straight on rather than each taking a page. */
+  .masthead {
+    margin: 0 0 8mm;
+    padding: 16mm 12mm 14mm;
+    background: #14110f;
+    color: #f2ede1;
+    box-shadow: none;
+    clip-path: none;
+    break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .masthead .title {
+    font-size: 3.6rem;
+  }
+
+  .masthead .subtitle { color: #f2ede1; }
+  .masthead .byline { color: #a49c8c; border-top-color: #3a3531; }
+
+  .contents {
+    border-top-width: 4pt;
+    break-inside: avoid;
+    margin-bottom: 2em;
+  }
+
+  /* Sections flow rather than each claiming a fresh page — forcing breaks
+     stranded short sections on mostly-blank pages. Headings still refuse to
+     be the last thing on a page, and paragraphs won't leave single lines
+     behind. */
+  h1, h2, h3 { break-after: avoid; }
+  h1:not(.title) { margin-top: 2.4em; }
+  p, li { orphans: 3; widows: 3; }
+  .highlight, .admonition, blockquote, table { break-inside: avoid; }
+
+  .admonition,
+  .admonition + .admonition {
+    transform: none;
+    border: 1.5pt solid #000;
+    border-left-width: 5pt;
+  }
+
+  /* Paper cannot scroll: long lines must wrap or they are simply lost off
+     the right edge. The wrap has to land on the <pre>, not the wrapper. */
+  .highlight {
+    overflow: visible;
+    font-size: 0.75em;
+  }
+
+  .highlight pre,
+  .highlight code {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  .highlight pre {
+    padding-left: 1.6em;
+    text-indent: -1.6em;
+  }
+
+  hr { display: none; }
+}
+
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f0f0f0; }
+.highlight .c { color: #60A0B0; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #007020; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #007020 } /* Comment.Preproc */
+.highlight .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #F00 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #888 } /* Generic.Output */
+.highlight .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #007020 } /* Keyword.Pseudo */
+.highlight .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #902000 } /* Keyword.Type */
+.highlight .m { color: #40A070 } /* Literal.Number */
+.highlight .s { color: #4070A0 } /* Literal.String */
+.highlight .na { color: #4070A0 } /* Name.Attribute */
+.highlight .nb { color: #007020 } /* Name.Builtin */
+.highlight .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.highlight .no { color: #60ADD5 } /* Name.Constant */
+.highlight .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.highlight .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #007020 } /* Name.Exception */
+.highlight .nf { color: #06287E } /* Name.Function */
+.highlight .nl { color: #002070; font-weight: bold } /* Name.Label */
+.highlight .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #BB60D5 } /* Name.Variable */
+.highlight .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #40A070 } /* Literal.Number.Bin */
+.highlight .mf { color: #40A070 } /* Literal.Number.Float */
+.highlight .mh { color: #40A070 } /* Literal.Number.Hex */
+.highlight .mi { color: #40A070 } /* Literal.Number.Integer */
+.highlight .mo { color: #40A070 } /* Literal.Number.Oct */
+.highlight .sa { color: #4070A0 } /* Literal.String.Affix */
+.highlight .sb { color: #4070A0 } /* Literal.String.Backtick */
+.highlight .sc { color: #4070A0 } /* Literal.String.Char */
+.highlight .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.highlight .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #4070A0 } /* Literal.String.Double */
+.highlight .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.highlight .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.highlight .sx { color: #C65D09 } /* Literal.String.Other */
+.highlight .sr { color: #235388 } /* Literal.String.Regex */
+.highlight .s1 { color: #4070A0 } /* Literal.String.Single */
+.highlight .ss { color: #517918 } /* Literal.String.Symbol */
+.highlight .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #06287E } /* Name.Function.Magic */
+.highlight .vc { color: #BB60D5 } /* Name.Variable.Class */
+.highlight .vg { color: #BB60D5 } /* Name.Variable.Global */
+.highlight .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
+@media (prefers-color-scheme: dark) {
+pre { line-height: 125%; }
+td.linenos .normal { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #6e7681; background-color: #0d1117; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #e6edf3; background-color: #6e7681; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #6e7681 }
+.highlight { background: #0d1117; color: #E6EDF3 }
+.highlight .c { color: #8B949E; font-style: italic } /* Comment */
+.highlight .err { color: #F85149 } /* Error */
+.highlight .esc { color: #E6EDF3 } /* Escape */
+.highlight .g { color: #E6EDF3 } /* Generic */
+.highlight .k { color: #FF7B72 } /* Keyword */
+.highlight .l { color: #A5D6FF } /* Literal */
+.highlight .n { color: #E6EDF3 } /* Name */
+.highlight .o { color: #FF7B72; font-weight: bold } /* Operator */
+.highlight .x { color: #E6EDF3 } /* Other */
+.highlight .p { color: #E6EDF3 } /* Punctuation */
+.highlight .ch { color: #8B949E; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #8B949E; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Preproc */
+.highlight .cpf { color: #8B949E; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #8B949E; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #8B949E; font-weight: bold; font-style: italic } /* Comment.Special */
+.highlight .gd { color: #FFA198; background-color: #490202 } /* Generic.Deleted */
+.highlight .ge { color: #E6EDF3; font-style: italic } /* Generic.Emph */
+.highlight .ges { color: #E6EDF3; font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #FFA198 } /* Generic.Error */
+.highlight .gh { color: #79C0FF; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #56D364; background-color: #0F5323 } /* Generic.Inserted */
+.highlight .go { color: #8B949E } /* Generic.Output */
+.highlight .gp { color: #8B949E } /* Generic.Prompt */
+.highlight .gs { color: #E6EDF3; font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #79C0FF } /* Generic.Subheading */
+.highlight .gt { color: #FF7B72 } /* Generic.Traceback */
+.highlight .g-Underline { color: #E6EDF3; text-decoration: underline } /* Generic.Underline */
+.highlight .kc { color: #79C0FF } /* Keyword.Constant */
+.highlight .kd { color: #FF7B72 } /* Keyword.Declaration */
+.highlight .kn { color: #FF7B72 } /* Keyword.Namespace */
+.highlight .kp { color: #79C0FF } /* Keyword.Pseudo */
+.highlight .kr { color: #FF7B72 } /* Keyword.Reserved */
+.highlight .kt { color: #FF7B72 } /* Keyword.Type */
+.highlight .ld { color: #79C0FF } /* Literal.Date */
+.highlight .m { color: #A5D6FF } /* Literal.Number */
+.highlight .s { color: #A5D6FF } /* Literal.String */
+.highlight .na { color: #E6EDF3 } /* Name.Attribute */
+.highlight .nb { color: #E6EDF3 } /* Name.Builtin */
+.highlight .nc { color: #F0883E; font-weight: bold } /* Name.Class */
+.highlight .no { color: #79C0FF; font-weight: bold } /* Name.Constant */
+.highlight .nd { color: #D2A8FF; font-weight: bold } /* Name.Decorator */
+.highlight .ni { color: #FFA657 } /* Name.Entity */
+.highlight .ne { color: #F0883E; font-weight: bold } /* Name.Exception */
+.highlight .nf { color: #D2A8FF; font-weight: bold } /* Name.Function */
+.highlight .nl { color: #79C0FF; font-weight: bold } /* Name.Label */
+.highlight .nn { color: #FF7B72 } /* Name.Namespace */
+.highlight .nx { color: #E6EDF3 } /* Name.Other */
+.highlight .py { color: #79C0FF } /* Name.Property */
+.highlight .nt { color: #7EE787 } /* Name.Tag */
+.highlight .nv { color: #79C0FF } /* Name.Variable */
+.highlight .ow { color: #FF7B72; font-weight: bold } /* Operator.Word */
+.highlight .pm { color: #E6EDF3 } /* Punctuation.Marker */
+.highlight .w { color: #6E7681 } /* Text.Whitespace */
+.highlight .mb { color: #A5D6FF } /* Literal.Number.Bin */
+.highlight .mf { color: #A5D6FF } /* Literal.Number.Float */
+.highlight .mh { color: #A5D6FF } /* Literal.Number.Hex */
+.highlight .mi { color: #A5D6FF } /* Literal.Number.Integer */
+.highlight .mo { color: #A5D6FF } /* Literal.Number.Oct */
+.highlight .sa { color: #79C0FF } /* Literal.String.Affix */
+.highlight .sb { color: #A5D6FF } /* Literal.String.Backtick */
+.highlight .sc { color: #A5D6FF } /* Literal.String.Char */
+.highlight .dl { color: #79C0FF } /* Literal.String.Delimiter */
+.highlight .sd { color: #A5D6FF } /* Literal.String.Doc */
+.highlight .s2 { color: #A5D6FF } /* Literal.String.Double */
+.highlight .se { color: #79C0FF } /* Literal.String.Escape */
+.highlight .sh { color: #79C0FF } /* Literal.String.Heredoc */
+.highlight .si { color: #A5D6FF } /* Literal.String.Interpol */
+.highlight .sx { color: #A5D6FF } /* Literal.String.Other */
+.highlight .sr { color: #79C0FF } /* Literal.String.Regex */
+.highlight .s1 { color: #A5D6FF } /* Literal.String.Single */
+.highlight .ss { color: #A5D6FF } /* Literal.String.Symbol */
+.highlight .bp { color: #E6EDF3 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #D2A8FF; font-weight: bold } /* Name.Function.Magic */
+.highlight .vc { color: #79C0FF } /* Name.Variable.Class */
+.highlight .vg { color: #79C0FF } /* Name.Variable.Global */
+.highlight .vi { color: #79C0FF } /* Name.Variable.Instance */
+.highlight .vm { color: #79C0FF } /* Name.Variable.Magic */
+.highlight .il { color: #A5D6FF } /* Literal.Number.Integer.Long */
+}
+@media print {
+pre { line-height: 125%; }
+td.linenos .normal { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+span.linenos { color: #666666; background-color: transparent; padding-left: 5px; padding-right: 5px; }
+td.linenos .special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 5px; padding-right: 5px; }
+.highlight .hll { background-color: #ffffcc }
+.highlight { background: #f0f0f0; }
+.highlight .c { color: #60A0B0; font-style: italic } /* Comment */
+.highlight .err { border: 1px solid #F00 } /* Error */
+.highlight .k { color: #007020; font-weight: bold } /* Keyword */
+.highlight .o { color: #666 } /* Operator */
+.highlight .ch { color: #60A0B0; font-style: italic } /* Comment.Hashbang */
+.highlight .cm { color: #60A0B0; font-style: italic } /* Comment.Multiline */
+.highlight .cp { color: #007020 } /* Comment.Preproc */
+.highlight .cpf { color: #60A0B0; font-style: italic } /* Comment.PreprocFile */
+.highlight .c1 { color: #60A0B0; font-style: italic } /* Comment.Single */
+.highlight .cs { color: #60A0B0; background-color: #FFF0F0 } /* Comment.Special */
+.highlight .gd { color: #A00000 } /* Generic.Deleted */
+.highlight .ge { font-style: italic } /* Generic.Emph */
+.highlight .ges { font-weight: bold; font-style: italic } /* Generic.EmphStrong */
+.highlight .gr { color: #F00 } /* Generic.Error */
+.highlight .gh { color: #000080; font-weight: bold } /* Generic.Heading */
+.highlight .gi { color: #00A000 } /* Generic.Inserted */
+.highlight .go { color: #888 } /* Generic.Output */
+.highlight .gp { color: #C65D09; font-weight: bold } /* Generic.Prompt */
+.highlight .gs { font-weight: bold } /* Generic.Strong */
+.highlight .gu { color: #800080; font-weight: bold } /* Generic.Subheading */
+.highlight .gt { color: #04D } /* Generic.Traceback */
+.highlight .kc { color: #007020; font-weight: bold } /* Keyword.Constant */
+.highlight .kd { color: #007020; font-weight: bold } /* Keyword.Declaration */
+.highlight .kn { color: #007020; font-weight: bold } /* Keyword.Namespace */
+.highlight .kp { color: #007020 } /* Keyword.Pseudo */
+.highlight .kr { color: #007020; font-weight: bold } /* Keyword.Reserved */
+.highlight .kt { color: #902000 } /* Keyword.Type */
+.highlight .m { color: #40A070 } /* Literal.Number */
+.highlight .s { color: #4070A0 } /* Literal.String */
+.highlight .na { color: #4070A0 } /* Name.Attribute */
+.highlight .nb { color: #007020 } /* Name.Builtin */
+.highlight .nc { color: #0E84B5; font-weight: bold } /* Name.Class */
+.highlight .no { color: #60ADD5 } /* Name.Constant */
+.highlight .nd { color: #555; font-weight: bold } /* Name.Decorator */
+.highlight .ni { color: #D55537; font-weight: bold } /* Name.Entity */
+.highlight .ne { color: #007020 } /* Name.Exception */
+.highlight .nf { color: #06287E } /* Name.Function */
+.highlight .nl { color: #002070; font-weight: bold } /* Name.Label */
+.highlight .nn { color: #0E84B5; font-weight: bold } /* Name.Namespace */
+.highlight .nt { color: #062873; font-weight: bold } /* Name.Tag */
+.highlight .nv { color: #BB60D5 } /* Name.Variable */
+.highlight .ow { color: #007020; font-weight: bold } /* Operator.Word */
+.highlight .w { color: #BBB } /* Text.Whitespace */
+.highlight .mb { color: #40A070 } /* Literal.Number.Bin */
+.highlight .mf { color: #40A070 } /* Literal.Number.Float */
+.highlight .mh { color: #40A070 } /* Literal.Number.Hex */
+.highlight .mi { color: #40A070 } /* Literal.Number.Integer */
+.highlight .mo { color: #40A070 } /* Literal.Number.Oct */
+.highlight .sa { color: #4070A0 } /* Literal.String.Affix */
+.highlight .sb { color: #4070A0 } /* Literal.String.Backtick */
+.highlight .sc { color: #4070A0 } /* Literal.String.Char */
+.highlight .dl { color: #4070A0 } /* Literal.String.Delimiter */
+.highlight .sd { color: #4070A0; font-style: italic } /* Literal.String.Doc */
+.highlight .s2 { color: #4070A0 } /* Literal.String.Double */
+.highlight .se { color: #4070A0; font-weight: bold } /* Literal.String.Escape */
+.highlight .sh { color: #4070A0 } /* Literal.String.Heredoc */
+.highlight .si { color: #70A0D0; font-style: italic } /* Literal.String.Interpol */
+.highlight .sx { color: #C65D09 } /* Literal.String.Other */
+.highlight .sr { color: #235388 } /* Literal.String.Regex */
+.highlight .s1 { color: #4070A0 } /* Literal.String.Single */
+.highlight .ss { color: #517918 } /* Literal.String.Symbol */
+.highlight .bp { color: #007020 } /* Name.Builtin.Pseudo */
+.highlight .fm { color: #06287E } /* Name.Function.Magic */
+.highlight .vc { color: #BB60D5 } /* Name.Variable.Class */
+.highlight .vg { color: #BB60D5 } /* Name.Variable.Global */
+.highlight .vi { color: #BB60D5 } /* Name.Variable.Instance */
+.highlight .vm { color: #BB60D5 } /* Name.Variable.Magic */
+.highlight .il { color: #40A070 } /* Literal.Number.Integer.Long */
+}
+</style>
+</head>
+<body>
+<header class="masthead">
+<h1 class="title">The Mullet Stack</h1>
+<p class="subtitle">A working refresher on modern Python and modern JavaScript, built by shipping one feature across both</p>
+<p class="byline">Sean Helvey · Accurate as of August 2026 — dependencies will have drifted by the time you read this</p>
+</header>
+<nav class="contents">
+<h2>Contents</h2>
+<div class="toc">
+<ul>
+<li><a href="#why-this-exists">Why this exists</a></li>
+<li><a href="#1-setting-up">1. Setting up</a></li>
+<li><a href="#2-backend-fastapi-pydantic">2. Backend: FastAPI + Pydantic</a></li>
+<li><a href="#3-frontend-react-typescript">3. Frontend: React + TypeScript</a></li>
+<li><a href="#4-connecting-rest-vs-graphql">4. Connecting: REST vs GraphQL</a></li>
+<li><a href="#5-testing-what-we-built">5. Testing what we built</a></li>
+<li><a href="#6-what-actually-turned-out-to-differ">6. What actually turned out to differ</a></li>
+</ul>
+</div>
+
+</nav>
+<h1 id="why-this-exists">Why this exists</h1>
+<p>I&rsquo;m prepping for interviews, and the thing I keep losing track of isn&rsquo;t syntax —
+it&rsquo;s the architecture underneath it. Agentic tools now generate a FastAPI route or
+a React component in seconds, which is great, except it means I can go a long time
+without consciously deciding <em>why</em> the generated code looks the way it does, or
+what the alternative would have been. This zine is me forcing that decision back
+into view, one small feature at a time.</p>
+<p>It is not a Python-vs-JavaScript showdown. That ground is well-trodden and mostly
+a waste of pixels. Instead: build one tiny real feature — a backend that returns a
+list of items, and a frontend that fetches and renders it — properly on both sides,
+and let the actual differences surface where they&rsquo;re real instead of manufacturing
+them for symmetry. Python and React aren&rsquo;t competing answers to the same question.
+They&rsquo;re two different layers of one pipeline, built by two ecosystems that grew up
+solving different problems. The mullet in the title is the honest shape of that:
+JavaScript out front where strangers&rsquo; browsers can see it, Python in the back where
+the data and the secrets live.</p>
+<p>I&rsquo;m still learning both of these out loud. If a take here is wrong or shallow,
+that&rsquo;s the working-refresher framing doing its job — better to write down what I
+currently believe and be correctable than to perform authority I don&rsquo;t have.</p>
+<p>The whole thing is backed by a real, small, running app in this repo
+(<code>app/backend</code>, <code>app/frontend</code>) — every snippet below is lifted from code that
+actually runs and passes its tests, occasionally trimmed to the lines under
+discussion, never invented for the page.</p>
+<hr />
+<h1 id="1-setting-up">1. Setting up</h1>
+<p>Before either side does anything interesting, get the smallest possible version of
+each running side by side. Nothing shared yet, no wiring — just &ldquo;hello&rdquo; on two
+different ports.</p>
+<p><strong>Backend.</strong> Python projects declare dependencies in <code>pyproject.toml</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">[project]</span>
+<span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"mullet-backend"</span>
+<span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.12"</span>
+<span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">"fastapi&gt;=0.115"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"uvicorn[standard]&gt;=0.30"</span><span class="p">,</span>
+<span class="p">]</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w">                    </span><span class="c1"># resolves and installs into a local .venv</span>
+uv<span class="w"> </span>run<span class="w"> </span>fastapi<span class="w"> </span>dev<span class="w">         </span><span class="c1"># serves on :8000, reloads on save</span>
+</code></pre></div>
+<p><strong>Frontend.</strong> JavaScript projects declare theirs in <code>package.json</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"react"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^19.2.8"</span><span class="p">,</span><span class="w"> </span><span class="nt">"react-dom"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^19.2.8"</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">"devDependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"vite"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^8.2.1"</span><span class="p">,</span><span class="w"> </span><span class="nt">"typescript"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^5.9.3"</span><span class="p">,</span><span class="w"> </span><span class="nt">"vitest"</span><span class="p">:</span><span class="w"> </span><span class="s2">"^4.1.10"</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>npm<span class="w"> </span>install<span class="w">                </span><span class="c1"># resolves and installs into node_modules</span>
+npm<span class="w"> </span>run<span class="w"> </span>dev<span class="w">                </span><span class="c1"># serves on :5173, reloads on save</span>
+</code></pre></div>
+<p>Two commands, two dev servers, nothing talking to each other yet. Point a browser
+at <code>:8000/docs</code> and <code>:5173</code> and you have two blank slates.</p>
+<p><strong>A packaging note, since I&rsquo;m doing this live anyway.</strong> <code>uv sync</code> and <code>npm install</code>
+look like the same step, but the resolvers underneath make different bets. npm
+resolves a deep, often-duplicated tree of transitive dependencies and — by
+default — lets any package in that tree run arbitrary code at install time via
+<code>postinstall</code> scripts. That&rsquo;s a real, frequently-exploited supply-chain surface;
+it&rsquo;s why <code>npm audit</code> exists and why lockfile review matters more than it looks
+like it should. Python&rsquo;s wheel format sidesteps most of that: a wheel is
+pre-built, and installing one just copies files — no code runs. The exposure
+moves earlier, to whoever built the wheel, not to everyone who installs it. uv
+writes a lockfile (<code>uv.lock</code>) the same way <code>package-lock.json</code> does, so both
+ecosystems now default to reproducible installs — that convergence is recent
+history, not something either language shipped with originally. Where they still
+differ is trust model, not reproducibility: PyPI package names are a flat global
+namespace with no scoping, same as npm&rsquo;s unscoped packages, so typosquatting risk
+exists on both sides and neither has fully solved it.</p>
+<hr />
+<h1 id="2-backend-fastapi-pydantic">2. Backend: FastAPI + Pydantic</h1>
+<p>This is Python&rsquo;s whole job in this build: define the shape of an item, and serve
+a list of them.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># app/models.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Item</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">in_stock</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1"># app/main.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Item</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">"mullet-stack backend"</span><span class="p">)</span>
+
+<span class="n">ITEMS</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">Item</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Enamel mug"</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"kitchen"</span><span class="p">,</span> <span class="s2">"camping"</span><span class="p">]),</span>
+    <span class="n">Item</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Field notebook"</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">"Grid pages, pocket-sized"</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"stationery"</span><span class="p">]),</span>
+    <span class="n">Item</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">"Multitool"</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"hardware"</span><span class="p">],</span> <span class="n">in_stock</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+<span class="p">]</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/items"</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="nb">list</span><span class="p">[</span><span class="n">Item</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_items</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="n">ITEMS</span>
+</code></pre></div>
+<p><code>uv run fastapi dev</code> and <code>curl localhost:8000/items</code> gets back a JSON array. So
+does a browser at <code>localhost:8000/docs</code> — FastAPI reads the type hints on <code>Item</code>
+and the route signature and generates an interactive OpenAPI page from them,
+without a separate schema file to keep in sync.</p>
+<p>The thing worth naming here, because the code makes it concrete instead of
+abstract: Python&rsquo;s type hints are not enforced by the interpreter. Write the
+same annotation on a plain class and nothing stops you at runtime —</p>
+<div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Plain</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+
+<span class="n">Plain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"not a number"</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>    <span class="c1"># 'not a number', no complaint</span>
+</code></pre></div>
+<p>— because hints are documentation and a hook for external tools like mypy or
+pyright, checked before the code ever runs, not while it runs.</p>
+<p>Pydantic is what closes that gap. <code>Item</code> carries the identical annotations, but
+because it&rsquo;s a <code>BaseModel</code> those annotations became a runtime contract:
+<code>Item(id="not a number", name="x")</code> raises <code>ValidationError</code> on the spot. Same
+hints, same syntax, completely different enforcement — and the difference is a
+library you chose to import, not anything the language did for you.</p>
+<p>Worth being precise about where that contract actually sits on this endpoint,
+though, because it&rsquo;s easy to overclaim. <code>GET /items</code> takes no request body, so
+there&rsquo;s nothing incoming for Pydantic to reject — throw a malformed payload at
+it and you&rsquo;ll get a cheerful <code>200</code>, because the handler never asked for input.
+<code>response_model=list[Item]</code> guards the way <em>out</em>: it validates what the handler
+returns. The 422-on-bad-input story everyone tells about FastAPI is real, but it
+belongs to endpoints that declare a request body or typed query params. This one
+doesn&rsquo;t. That&rsquo;s very in character for Python&rsquo;s gradual-typing story: types are
+always optional, and how much they <em>do</em> depends entirely on what you bring in to
+enforce them — and on where you actually wired it in.</p>
+<div class="admonition aside">
+<p class="admonition-title">The road not taken: Django</p>
+<p>If this were a full CRUD app with an admin panel and an ORM expected out of the
+box, Django would be the batteries-included alternative to FastAPI&rsquo;s
+minimal-core-plus-libraries approach — worth knowing it exists, not worth a
+detour here.</p>
+</div>
+<hr />
+<h1 id="3-frontend-react-typescript">3. Frontend: React + TypeScript</h1>
+<p>This is JavaScript&rsquo;s whole job: fetch that list and render it.</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// src/types.ts</span>
+<span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">Item</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">  </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span>
+<span class="w">  </span><span class="nx">in_stock</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">// src/ItemList.tsx</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useEffect</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"react"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Item</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"./types"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">API_URL</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"http://localhost:8000/items"</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">function</span><span class="w"> </span><span class="nx">ItemList</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">items</span><span class="p">,</span><span class="w"> </span><span class="nx">setItems</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">Item</span><span class="err">[]</span><span class="p">&gt;([]);</span>
+<span class="w">  </span><span class="kd">const</span><span class="w"> </span><span class="p">[</span><span class="nx">error</span><span class="p">,</span><span class="w"> </span><span class="nx">setError</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">useState</span><span class="p">&lt;</span><span class="nt">string</span><span class="w"> </span><span class="err">|</span><span class="w"> </span><span class="na">null</span><span class="p">&gt;(</span><span class="kc">null</span><span class="p">);</span>
+
+<span class="w">  </span><span class="nx">useEffect</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">fetch</span><span class="p">(</span><span class="nx">API_URL</span><span class="p">)</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">response</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">response</span><span class="p">.</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="k">throw</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="ne">Error</span><span class="p">(</span><span class="sb">`Request failed: </span><span class="si">${</span><span class="nx">response</span><span class="p">.</span><span class="nx">status</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">();</span>
+<span class="w">      </span><span class="p">})</span>
+<span class="w">      </span><span class="p">.</span><span class="nx">then</span><span class="p">((</span><span class="nx">data</span><span class="o">:</span><span class="w"> </span><span class="kt">Item</span><span class="p">[])</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setItems</span><span class="p">(</span><span class="nx">data</span><span class="p">))</span>
+<span class="w">      </span><span class="p">.</span><span class="k">catch</span><span class="p">((</span><span class="nx">err</span><span class="o">:</span><span class="w"> </span><span class="kt">Error</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">setError</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">));</span>
+<span class="w">  </span><span class="p">},</span><span class="w"> </span><span class="p">[]);</span>
+
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">error</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="p">&lt;</span><span class="nt">p</span><span class="w"> </span><span class="na">role</span><span class="o">=</span><span class="s">"alert"</span><span class="p">&gt;</span><span class="nx">Couldn</span>'<span class="nx">t</span><span class="w"> </span><span class="nx">load</span><span class="w"> </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="nx">error</span><span class="p">}&lt;/</span><span class="nt">p</span><span class="p">&gt;;</span>
+
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="p">&lt;</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">{</span><span class="nx">items</span><span class="p">.</span><span class="nx">map</span><span class="p">((</span><span class="nx">item</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">        </span><span class="p">&lt;</span><span class="nt">li</span><span class="w"> </span><span class="na">key</span><span class="o">=</span><span class="p">{</span><span class="nx">item</span><span class="p">.</span><span class="nx">id</span><span class="p">}&gt;</span>
+<span class="w">          </span><span class="p">&lt;</span><span class="nt">strong</span><span class="p">&gt;{</span><span class="nx">item</span><span class="p">.</span><span class="nx">name</span><span class="p">}&lt;/</span><span class="nt">strong</span><span class="p">&gt;</span>
+<span class="w">          </span><span class="p">{</span><span class="o">!</span><span class="nx">item</span><span class="p">.</span><span class="nx">in_stock</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="s2">" (out of stock)"</span><span class="p">}</span>
+<span class="w">        </span><span class="p">&lt;/</span><span class="nt">li</span><span class="p">&gt;</span>
+<span class="w">      </span><span class="p">))}</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">ul</span><span class="p">&gt;</span>
+<span class="w">  </span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Put <code>Item</code> from <code>types.ts</code> next to <code>Item</code> from <code>models.py</code> and the real
+difference isn&rsquo;t the syntax — it&rsquo;s what kind of typing each one is. Pydantic&rsquo;s
+<code>Item</code> is a class: two Python objects are only interchangeable if one is
+actually built as (or subclasses) that class. TypeScript&rsquo;s <code>Item</code> is an
+interface describing a <em>shape</em>: anything with the right fields satisfies it,
+whether or not it ever heard of the name <code>Item</code>. That&rsquo;s structural typing —
+TypeScript checks what an object has, not what it claims to be — and it&rsquo;s the
+default posture of the whole language, not a special case for interfaces.</p>
+<p>The sharper asymmetry, though, is what happens to each of these at runtime:
+nothing, on the TypeScript side. <code>npm run build</code> strips every type annotation
+on its way to plain JavaScript — by the time this code runs in a browser, <code>Item</code>
+doesn&rsquo;t exist anymore in any form the running program can check against. If the
+backend&rsquo;s <code>/items</code> response silently drifts from this shape, TypeScript will not
+notice, because TypeScript never sees production traffic; it only ever saw the
+code once, at build time. Pydantic, on the previous page, does the opposite: it
+keeps its type information around specifically so it can enforce it while the
+program is running. Same-looking type declaration, two completely different
+lifetimes.</p>
+<div class="admonition aside">
+<p class="admonition-title">The road not taken: Vue and Svelte</p>
+<p>Vue&rsquo;s single-file components or Svelte&rsquo;s compiler-driven approach would express
+this same list with noticeably less boilerplate than React&rsquo;s hooks — worth
+knowing they exist if <code>useEffect</code> ever starts to feel like the tax rather than
+the tool.</p>
+</div>
+<div class="admonition aside">
+<p class="admonition-title">The elephant: Next.js</p>
+<p>It&rsquo;s the more common starting point than plain Vite + React these days, so it
+deserves naming rather than a footnote. Next.js is React plus a framework&rsquo;s
+worth of opinions — file-based routing, and server components that fetch
+<code>/items</code> during render on the server instead of from <code>useEffect</code> in the
+browser.</p>
+<p>That last part quietly erases the boundary this zine draws in the next
+section, because the &ldquo;client&rdquo; fetching the data is now Next&rsquo;s own server, not
+a stranger&rsquo;s browser. Which is exactly why it&rsquo;s out of scope here: this zine
+is about the seam between two separate processes, and Next.js&rsquo;s whole pitch is
+blurring that seam. Worth knowing what it&rsquo;s blurring before you reach for it.</p>
+</div>
+<hr />
+<h1 id="4-connecting-rest-vs-graphql">4. Connecting: REST vs GraphQL</h1>
+<p>Here&rsquo;s the one place in this build with a genuine either/or, so it&rsquo;s the one
+place a real &ldquo;vs&rdquo; section earns its keep.</p>
+<p>What&rsquo;s actually wired up, in <code>ItemList.tsx</code> above, is REST: a plain <code>GET
+/items</code> returning the full list, fetched with the browser&rsquo;s native <code>fetch</code>.
+For a single flat resource like this, that&rsquo;s the right, boring choice — but
+it&rsquo;s worth being honest about why, and where it stops being the right choice.</p>
+<p>First, though, the thing that actually breaks before any of that becomes
+relevant. Wire the two dev servers together exactly as written above and the
+request fails — not on the shape of the data, on permission to ask for it at
+all. <code>:5173</code> and <code>:8000</code> are different origins, so the browser refuses to hand
+the response to my JavaScript unless the server explicitly says that origin is
+allowed. The fix is four lines the backend section quietly skipped over:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># app/main.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.middleware.cors</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORSMiddleware</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span>
+    <span class="n">CORSMiddleware</span><span class="p">,</span>
+    <span class="n">allow_origins</span><span class="o">=</span><span class="p">[</span><span class="s2">"http://localhost:5173"</span><span class="p">],</span>
+    <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">"GET"</span><span class="p">],</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>That&rsquo;s worth more than a troubleshooting footnote, because it&rsquo;s this zine&rsquo;s
+whole thesis compressed into one error message. <code>curl localhost:8000/items</code>
+works and always did — curl has no origin, no other tabs, nobody to protect. The
+identical request from a browser is refused, because a browser is executing code
+from strangers next to my logged-in sessions, and same-origin policy is the rule
+that keeps one tab from reading another&rsquo;s data. Nothing about the data changed.
+The <em>caller</em> changed, and the caller&rsquo;s threat model came with it. Business in
+the back, party in the front: the party is the part where untrusted code runs on
+someone else&rsquo;s machine, and this is the bouncer.</p>
+<p>With that out of the way, the actual REST-versus-GraphQL tradeoffs.</p>
+<p><strong>Over/under-fetching.</strong> REST&rsquo;s <code>Item</code> response ships every field —
+<code>description</code>, <code>tags</code>, <code>in_stock</code> — whether the component uses all of them or
+just <code>name</code>. A view that only needs the name still pays for the rest of the
+payload. GraphQL flips this: the client sends a query naming exactly the fields
+it wants, and the server returns exactly that shape, no more. That matters more
+as payloads and screens multiply — for one list of three items, it&rsquo;s not a real
+cost yet.</p>
+<p><strong>Nested data and the N+1 problem.</strong> If each item eventually had a related
+resource — a claim history, a set of reviews — REST typically means either a
+second round trip per item (classic N+1: one request for the list, one more per
+item for its detail) or a bespoke, list-specific endpoint that pre-joins the
+data server-side. GraphQL lets the client ask for <code>items { name, reviews { rating } }</code>
+in a single request and have the server resolve the nesting. That&rsquo;s a genuine
+advantage — but it&rsquo;s not free: naive GraphQL resolvers can silently reintroduce
+the exact same N+1 problem one level down, and the standard fix (batching
+resolvers with something like DataLoader) is itself a piece of backend
+architecture you now own.</p>
+<p><strong>Caching.</strong> REST&rsquo;s biggest quiet advantage: <code>GET /items</code> is a stable URL, so
+the entire HTTP caching machinery — browser cache, <code>ETag</code>s, CDN edge caches —
+works on it for free. GraphQL usually POSTs a single query document to a single
+endpoint, which has no stable URL for that infrastructure to key on. Getting
+comparable caching back means adopting a GraphQL-aware client (Apollo Client,
+Relay) that builds its own normalized cache in memory, or adding persisted
+queries — real solutions, but they&rsquo;re solving a problem REST didn&rsquo;t have in the
+first place.</p>
+<p>None of this makes GraphQL wrong — it makes it a trade against a specific kind
+of complexity (nested, over-fetched, multi-consumer data) that this feature
+doesn&rsquo;t have yet. For one endpoint returning one flat list to one frontend,
+REST is the honest choice, not the naive one.</p>
+<div class="admonition aside">
+<p class="admonition-title">The road not taken: HTMX</p>
+<p>If neither side needs a client-rendered app at all — if the whole page could be
+server-rendered and just swap in the new list — HTMX is worth a mention: it
+gets you dynamic updates over plain HTTP without a JSON API or a frontend
+framework in the loop at all.</p>
+</div>
+<hr />
+<h1 id="5-testing-what-we-built">5. Testing what we built</h1>
+<p>With a real feature running end to end, both sides get an actual test instead
+of a toy one.</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># tests/test_items.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.testclient</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestClient</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">app.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">TestClient</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_list_items_returns_all_items</span><span class="p">():</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/items"</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span>
+
+    <span class="n">items</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+    <span class="k">assert</span> <span class="n">items</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"name"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"Enamel mug"</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">test_list_items_matches_the_item_shape</span><span class="p">():</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/items"</span><span class="p">)</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="p">{</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"name"</span><span class="p">,</span> <span class="s2">"description"</span><span class="p">,</span> <span class="s2">"tags"</span><span class="p">,</span> <span class="s2">"in_stock"</span><span class="p">}</span>
+    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">"tags"</span><span class="p">],</span> <span class="nb">list</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="c1">// tests/ItemList.test.tsx</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">render</span><span class="p">,</span><span class="w"> </span><span class="nx">screen</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@testing-library/react"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ItemList</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../src/ItemList"</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">items</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Enamel mug"</span><span class="p">,</span><span class="w"> </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">null</span><span class="p">,</span><span class="w"> </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"kitchen"</span><span class="p">],</span><span class="w"> </span><span class="nx">in_stock</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Multitool"</span><span class="p">,</span><span class="w"> </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">null</span><span class="p">,</span><span class="w"> </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="nx">in_stock</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">},</span>
+<span class="p">];</span>
+
+<span class="nx">beforeEach</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nb">globalThis</span><span class="p">.</span><span class="nx">fetch</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">vi</span><span class="p">.</span><span class="nx">fn</span><span class="p">().</span><span class="nx">mockResolvedValue</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">ok</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">json</span><span class="o">:</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nb">Promise</span><span class="p">.</span><span class="nx">resolve</span><span class="p">(</span><span class="nx">items</span><span class="p">),</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">unknown</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="nx">Response</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="nx">test</span><span class="p">(</span><span class="s2">"renders a list item for each item returned by the API"</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">render</span><span class="p">(&lt;</span><span class="nt">ItemList</span><span class="w"> </span><span class="p">/&gt;);</span>
+
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="nx">screen</span><span class="p">.</span><span class="nx">findByText</span><span class="p">(</span><span class="s2">"Enamel mug"</span><span class="p">)).</span><span class="nx">toBeInTheDocument</span><span class="p">();</span>
+<span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">screen</span><span class="p">.</span><span class="nx">getByText</span><span class="p">(</span><span class="s2">"Multitool"</span><span class="p">)).</span><span class="nx">toBeInTheDocument</span><span class="p">();</span>
+<span class="p">});</span>
+</code></pre></div>
+<p>The runner on the JavaScript side is Vitest, which is worth a sentence of
+justification since Jest is still the name most people reach for. This is a
+Vite project, and Vitest reads the same <code>vite.config.ts</code> the dev server does —
+one toolchain, one set of transform rules. Reaching for Jest instead means
+installing a second transform pipeline (<code>ts-jest</code>, a JSDOM environment, its own
+config) whose job is to re-derive what Vite already knows. The API is
+Jest-compatible either way, so nothing below changes shape; what changes is how
+many build systems you own.</p>
+<p>Watching both get written back to back says more than any callout would. pytest
+leans on the bare <code>assert</code> statement — <code>assert response.status_code == 200</code> —
+and gets a readable failure message anyway, because pytest rewrites the
+assertion at import time to capture the values on both sides of the comparison.
+There&rsquo;s no special assertion API to learn. The JavaScript convention runs the
+other way: <code>expect(x).toBeInTheDocument()</code>, chained matchers, one method per
+kind of check. Part of why is structural — JS test runners don&rsquo;t have an
+equivalent of pytest&rsquo;s import-time assertion rewriting, so the ecosystem built
+expressiveness into chainable matcher objects instead of into the assert
+statement itself.</p>
+<p>The other thing that falls out of writing these side by side: mocking ships as
+a first-class part of the runner — <code>vi.fn()</code> is just there, no import beyond
+the runner itself (<code>jest.fn()</code> in Jest; same idea, same ergonomics). Python&rsquo;s
+equivalent, <code>unittest.mock</code> (or <code>pytest-mock</code> on top of it), is a separate, more
+deliberate affair — you reach for <code>Mock()</code> or <code>@patch</code> explicitly, and it feels
+more like a tool you pick up than a feature the framework hands you by default.
+Neither is better; it&rsquo;s just a different default about how much mocking
+machinery a test file starts with for free.</p>
+<hr />
+<h1 id="6-what-actually-turned-out-to-differ">6. What actually turned out to differ</h1>
+<p>Stepping back from the build: the differences that held up were not the ones
+I&rsquo;d have guessed going in from syntax alone.</p>
+<p><strong>Typing.</strong> Python&rsquo;s type hints are optional and unenforced by the interpreter
+— they only became a runtime contract here because Pydantic chose to make them
+one, at the specific boundary of the API. TypeScript&rsquo;s types are the opposite
+shape: omnipresent at build time, then completely erased before the code ever
+runs. One system chooses when to turn types into an enforced guarantee at all;
+the other guarantees comprehensively and then guarantees nothing once the
+program is actually running. Neither is strictly stronger — they&rsquo;re solving for
+different moments in a program&rsquo;s life.</p>
+<p><strong>Packaging and trust.</strong> Both ecosystems converged on lockfiles and
+reproducible installs; that part isn&rsquo;t a real difference anymore. What&rsquo;s still
+different is where the risk sits: npm&rsquo;s install-time script execution puts
+trust pressure on every dependency, every time you install, because arbitrary
+code can run before your program does. Python&rsquo;s wheel format moves that
+pressure upstream, to whoever built the wheel, and mostly spares the install
+step itself. Different shape of the same underlying problem — you&rsquo;re trusting a
+supply chain either way.</p>
+<p><strong>Concurrency.</strong> This is the one that actually surprised me. Node&rsquo;s event loop
+is the only concurrency model it has ever had — every I/O call in the ecosystem
+grew up async, because there was never a blocking version sitting next to it to
+tempt anyone. Python&rsquo;s async support is bolted on by comparison: <code>async def</code>,
+an event loop, and a real, load-bearing seam running through the entire
+ecosystem between sync and async code, plus a GIL that keeps even
+multi-threaded Python from running Python bytecode on more than one core at a
+time. (That last part is finally in motion: free-threaded builds landed
+experimentally in 3.13 and became officially supported in 3.14, which is what
+this repo runs on. Not the default yet, and the ecosystem is still catching up,
+but &ldquo;Python has a GIL&rdquo; is now a statement about which build you installed
+rather than about the language.) FastAPI straddles that seam directly — it supports both <code>def</code> and <code>async
+def</code> route handlers, and the failure mode is real: drop blocking, synchronous
+work into an <code>async def</code> handler and it stalls the <em>entire</em> event loop for
+every other request the process is serving, not just the one that made the
+mistake. Node never gives you the footgun in the first place, because it never
+gave you the synchronous option to reach for. That&rsquo;s not a small stylistic
+difference — it&rsquo;s a different foundational assumption about what &ldquo;running a
+request handler&rdquo; means.</p>
+<p>Put together, the honest version of this zine&rsquo;s thesis is smaller than &ldquo;Python
+vs JavaScript&rdquo;: it&rsquo;s that a server process owning a database connection and a
+browser tab owned by a stranger were never going to converge on the same
+tradeoffs, no matter how similar <code>async</code> and <code>await</code> look sitting in each
+language&rsquo;s syntax. The mullet isn&rsquo;t a joke about mismatched hair — it&rsquo;s an
+accurate description of two environments doing genuinely different jobs, built
+by two communities that optimized for the constraints they actually had. I
+came in expecting to relearn syntax. I&rsquo;m leaving with a clearer sense of why
+the syntax ended up the way it did — which was the actual point.</p>
+<p>I&rsquo;ll be wrong about some of this in a year. That&rsquo;s fine — that&rsquo;s what the
+&ldquo;accurate as of&rdquo; on the cover is for.</p>
+</body>
+</html>

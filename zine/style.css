@@ -1,77 +1,478 @@
-body {
-  max-width: 42em;
-  margin: 3em auto;
-  padding: 0 1.5em;
-  font-family: Georgia, "Iowan Old Style", serif;
-  line-height: 1.6;
-  color: #1a1a1a;
-  background: #fdfbf7;
+/* The Mullet Stack — riso-printed fanzine.
+   Inlined into zine.html by build.py; re-run `uv run zine/build.py` after
+   editing. Code block colors come from Pygments, not from here.
+
+   Two spot colors, the way a real risograph zine prints: pink for the party
+   out front, blue for the business in the back. */
+
+:root {
+  --ink: #14110f;
+  --paper: #f2ede1;
+  --paper-2: #e7e0cf;
+  --rule: #c9c2b2;
+  --muted: #6b6558;
+  --party: #d81f63;   /* front / JavaScript */
+  --business: #1f5fd0; /* back / Python */
+
+  /* 'Lato Zine' is embedded by build.py as a data URI; the rest is
+     insurance for anyone opening a hand-edited copy. */
+  --display: "Lato Zine", Impact, "Haettenschweiler",
+             "Liberation Sans Narrow", "Arial Narrow", sans-serif;
+  --body: Georgia, "Bitstream Charter", "Liberation Serif", serif;
+  --mono: "Courier New", "DejaVu Sans Mono", monospace;
 }
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 40em;
+  margin: 0 auto;
+  padding: 0 1.5em 6em;
+  font-family: var(--body);
+  font-size: 1.05em;
+  line-height: 1.62;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+/* ---- masthead ------------------------------------------------------- */
+
+/* Full-bleed ink band without the horizontal scrollbar that a -100vw
+   margin would cause: the shadow paints past the element, the clip-path
+   keeps it from spilling vertically. */
+.masthead {
+  background: var(--ink);
+  color: var(--paper);
+  margin: 0 0 3em;
+  padding: 2.8em 0 2.2em;
+  box-shadow: 0 0 0 100vmax var(--ink);
+  clip-path: inset(0 -100vmax);
+}
+
+.masthead .title {
+  font-family: var(--display);
+  font-size: clamp(3rem, 13vw, 6.5rem);
+  font-weight: 900;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  margin: 0;
+  color: var(--party);
+}
+
+/* The second spot color earns its keep on the labels rather than smeared
+   across the wordmark — a gradient through wrapped display type just reads
+   as a smudge. */
+.masthead .byline strong,
+.contents h2 {
+  color: var(--business);
+}
+
+.masthead .subtitle {
+  font-family: var(--body);
+  font-size: 1.02em;
+  font-style: italic;
+  line-height: 1.4;
+  color: var(--paper);
+  max-width: 30em;
+  margin: 0.9em 0 0;
+}
+
+.masthead .byline {
+  font-family: var(--mono);
+  font-size: 0.72em;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #a49c8c;
+  margin: 1.6em 0 0;
+  padding-top: 1em;
+  border-top: 1px solid #3a3531;
+}
+
+/* ---- contents ------------------------------------------------------- */
+
+.contents {
+  border: 2px solid var(--ink);
+  border-top: 10px solid var(--business);
+  padding: 1.4em 1.6em;
+  margin-bottom: 4em;
+}
+
+.contents h2 {
+  font-family: var(--mono);
+  font-size: 0.72em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  border: none;
+  margin: 0 0 0.7em;
+  padding: 0;
+}
+
+.contents ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.contents li + li {
+  margin-top: 0.28em;
+}
+
+.contents a {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.22em;
+  text-transform: uppercase;
+  letter-spacing: 0.015em;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.contents a:hover,
+.contents a:focus {
+  color: var(--party);
+}
+
+/* ---- headings ------------------------------------------------------- */
 
 h1, h2, h3 {
-  font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
-  line-height: 1.25;
+  font-family: var(--display);
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  text-wrap: balance;
 }
 
-h1.title {
-  font-size: 2.2em;
-  margin-bottom: 0.1em;
-}
-
-p.subtitle {
-  font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
-  font-size: 1.1em;
-  color: #555;
-  margin-top: 0;
+/* Sections in zine.md are `#`; .title is the masthead and opts out. */
+h1:not(.title) {
+  font-size: clamp(2rem, 6vw, 2.9rem);
+  margin: 2.4em 0 0.7em;
+  padding-bottom: 0.12em;
+  border-bottom: 6px solid var(--ink);
 }
 
 h2 {
-  border-top: 3px solid #1a1a1a;
-  padding-top: 0.6em;
-  margin-top: 2.5em;
+  font-size: 1.5rem;
+  margin: 2em 0 0.6em;
+}
+
+h3 {
+  font-size: 1.2rem;
+  margin: 1.8em 0 0.5em;
+}
+
+/* ---- body ----------------------------------------------------------- */
+
+p {
+  margin: 0 0 1.15em;
+}
+
+/* Lead-in run-ins like **Caching.** read as stamped labels. */
+p > strong:first-child {
+  font-family: var(--mono);
+  font-size: 0.86em;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+em {
+  color: var(--party);
+  font-style: italic;
+}
+
+a {
+  color: var(--business);
+  text-underline-offset: 0.15em;
 }
 
 code {
-  font-family: "SF Mono", Menlo, Consolas, monospace;
-  font-size: 0.88em;
-  background: #f0ede4;
-  padding: 0.1em 0.3em;
-  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 0.86em;
+  background: var(--paper-2);
+  padding: 0.08em 0.28em;
 }
 
-pre {
-  background: #1a1a1a;
-  color: #f0ede4;
-  padding: 1em 1.2em;
+/* ---- code blocks: photocopied printouts ----------------------------- */
+
+.highlight {
+  border: 2px solid var(--ink);
+  padding: 1em 1.1em;
+  margin: 0 0 1.6em;
   overflow-x: auto;
-  border-radius: 6px;
-  font-size: 0.85em;
+  font-size: 0.82em;
+  line-height: 1.5;
+}
+
+.highlight pre {
+  margin: 0;
+  font-family: var(--mono);
 }
 
 pre code {
   background: none;
   padding: 0;
-  color: inherit;
+  font-size: inherit;
+}
+
+/* ---- asides: taped onto the page ------------------------------------ */
+
+.admonition {
+  position: relative;
+  background: var(--paper-2);
+  border-left: 6px solid var(--party);
+  padding: 1.2em 1.4em 0.5em;
+  margin: 2.2em 0;
+  font-size: 0.93em;
+  transform: rotate(-0.35deg);
+}
+
+.admonition + .admonition {
+  transform: rotate(0.3deg);
+}
+
+.admonition-title {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: 1.15em;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--party);
+  margin: 0 0 0.5em;
+}
+
+.admonition p:last-child {
+  margin-bottom: 0.7em;
 }
 
 blockquote {
-  border-left: 3px solid #ccc;
+  border-left: 4px solid var(--rule);
   margin-left: 0;
   padding-left: 1.2em;
-  color: #555;
+  color: var(--muted);
+  font-style: italic;
 }
 
 hr {
   border: none;
-  border-top: 1px dashed #999;
-  margin: 3em 0;
+  border-top: 2px dashed var(--rule);
+  margin: 3.2em 0;
 }
 
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.92em;
+}
+
+th, td {
+  border: 1px solid var(--rule);
+  padding: 0.45em 0.7em;
+  text-align: left;
+}
+
+th {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--paper-2);
+}
+
+:focus-visible {
+  outline: 3px solid var(--party);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admonition,
+  .admonition + .admonition {
+    transform: none;
+  }
+}
+
+/* ---- phones ---------------------------------------------------------- */
+
+@media (max-width: 34em) {
+  body {
+    padding: 0 1.1em 4em;
+    font-size: 1em;
+    line-height: 1.58;
+  }
+
+  .masthead {
+    padding: 2em 0 1.6em;
+  }
+
+  .masthead .title {
+    font-size: 3.1rem;
+    line-height: 0.9;
+  }
+
+  .masthead .byline {
+    letter-spacing: 0.05em;
+    word-break: break-word;
+  }
+
+  .contents {
+    padding: 1.1em 1.2em;
+    margin-bottom: 2.8em;
+  }
+
+  .contents a {
+    font-size: 1.05em;
+  }
+
+  h1:not(.title) {
+    margin-top: 1.6em;
+    border-bottom-width: 4px;
+  }
+
+  /* Sideways-scrolling code is miserable on a phone. Wrap instead, with a
+     hanging indent so continuation lines stay visibly subordinate. */
+  .highlight {
+    padding: 0.8em 0.9em;
+    font-size: 0.76em;
+  }
+
+  .highlight pre,
+  .highlight code {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  .highlight pre {
+    padding-left: 1.4em;
+    text-indent: -1.4em;
+  }
+
+  .admonition {
+    padding: 1em 1.1em 0.4em;
+    margin: 1.8em 0;
+  }
+
+  /* Tilted boxes overhang the narrow viewport; sit them straight. */
+  .admonition,
+  .admonition + .admonition {
+    transform: none;
+  }
+}
+
+/* ---- dark: the same zine, photocopied onto black -------------------- */
+
 @media (prefers-color-scheme: dark) {
-  body { background: #16171a; color: #e6e4de; }
-  p.subtitle { color: #a3a19a; }
-  h2 { border-top-color: #e6e4de; }
-  code { background: #26282c; }
-  blockquote { border-left-color: #444; color: #a3a19a; }
-  hr { border-top-color: #444; }
+  :root {
+    --ink: #ece6d8;
+    --paper: #14130f;
+    --paper-2: #201e18;
+    --rule: #423e35;
+    --muted: #9a9382;
+    --party: #ff5c93;
+    --business: #6f9dff;
+  }
+
+  .masthead {
+    background: #000;
+    color: var(--ink);
+    /* --ink is light here, so the bleed has to be pinned to the band. */
+    box-shadow: 0 0 0 100vmax #000;
+  }
+
+  .masthead .subtitle { color: var(--ink); }
+  .masthead .byline { color: var(--muted); border-top-color: #2e2a24; }
+}
+
+/* ---- paper ---------------------------------------------------------- */
+
+@page {
+  size: A4;
+  margin: 16mm 15mm;
+}
+
+@media print {
+  /* The spot colors stay: "print" is usually Save as PDF, read on a screen.
+     On a mono printer they drop to grey, which still reads fine. */
+  :root {
+    --ink: #000;
+    --paper: #fff;
+    --paper-2: #f0ece2;
+    --rule: #9a9382;
+  }
+
+  body {
+    max-width: none;
+    padding: 0;
+    font-size: 10.5pt;
+  }
+
+  /* Page one is a cover, not a page header: keep the ink band, let it run
+     to the paper's edge, and give it the page to itself. */
+  /* An inset panel rather than a bled one: the reader picks their own
+     margins in the print dialog, so anything depending on exact bleed
+     breaks half the time. Sized to its content so the contents list and
+     the first section follow straight on rather than each taking a page. */
+  .masthead {
+    margin: 0 0 8mm;
+    padding: 16mm 12mm 14mm;
+    background: #14110f;
+    color: #f2ede1;
+    box-shadow: none;
+    clip-path: none;
+    break-inside: avoid;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .masthead .title {
+    font-size: 3.6rem;
+  }
+
+  .masthead .subtitle { color: #f2ede1; }
+  .masthead .byline { color: #a49c8c; border-top-color: #3a3531; }
+
+  .contents {
+    border-top-width: 4pt;
+    break-inside: avoid;
+    margin-bottom: 2em;
+  }
+
+  /* Sections flow rather than each claiming a fresh page — forcing breaks
+     stranded short sections on mostly-blank pages. Headings still refuse to
+     be the last thing on a page, and paragraphs won't leave single lines
+     behind. */
+  h1, h2, h3 { break-after: avoid; }
+  h1:not(.title) { margin-top: 2.4em; }
+  p, li { orphans: 3; widows: 3; }
+  .highlight, .admonition, blockquote, table { break-inside: avoid; }
+
+  .admonition,
+  .admonition + .admonition {
+    transform: none;
+    border: 1.5pt solid #000;
+    border-left-width: 5pt;
+  }
+
+  /* Paper cannot scroll: long lines must wrap or they are simply lost off
+     the right edge. The wrap has to land on the <pre>, not the wrapper. */
+  .highlight {
+    overflow: visible;
+    font-size: 0.75em;
+  }
+
+  .highlight pre,
+  .highlight code {
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+  }
+
+  .highlight pre {
+    padding-left: 1.6em;
+    text-indent: -1.6em;
+  }
+
+  hr { display: none; }
 }

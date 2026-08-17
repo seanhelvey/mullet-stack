@@ -7,10 +7,10 @@ const items = [
 ];
 
 beforeEach(() => {
-  globalThis.fetch = jest.fn().mockResolvedValue({
+  globalThis.fetch = vi.fn().mockResolvedValue({
     ok: true,
     json: () => Promise.resolve(items),
-  }) as jest.Mock;
+  } as unknown as Response);
 });
 
 test("renders a list item for each item returned by the API", async () => {
@@ -28,7 +28,10 @@ test("flags items that are out of stock", async () => {
 });
 
 test("shows an error message when the request fails", async () => {
-  globalThis.fetch = jest.fn().mockResolvedValue({ ok: false, status: 500 }) as jest.Mock;
+  globalThis.fetch = vi.fn().mockResolvedValue({
+    ok: false,
+    status: 500,
+  } as unknown as Response);
 
   render(<ItemList />);
 

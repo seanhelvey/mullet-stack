@@ -7,9 +7,23 @@ __pycache__/
 node_modules/
 dist/
 
-# Zine build output (regenerate with `make -C zine html` / `pdf`)
-zine/zine.html
+# zine/zine.html is intentionally committed — cloning the repo should be
+# enough to read the zine, no build step required.
 zine/zine.pdf
+
+# Test / tooling caches
+.pytest_cache/
+.ruff_cache/
+coverage/
+
+# Editors (no trailing slash: these are not always real directories)
+.idea
+.vscode
+
+# Local agent config — personal, not part of the project. If this ever grows
+# genuinely shared setup, .claude/settings.json is the file worth committing
+# (force-add it); .claude/settings.local.json never is.
+.claude
 
 # OS
 .DS_Store

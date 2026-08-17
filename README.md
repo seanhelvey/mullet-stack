@@ -5,15 +5,39 @@ and modern JavaScript, built around one tiny shared feature — fetching a list
 of items — with a real FastAPI backend and a real React frontend behind every
 snippet in the text.
 
-Read the zine: [`zine/zine.md`](zine/zine.md) (or render it — see below).
+## Read the zine
+
+Two ways, both zero-setup:
+
+- **In your browser** — open [`zine/zine.html`](zine/zine.html). It's committed
+  to the repo, so it's there the moment you clone. One self-contained file:
+  no build, no server, no dependencies. Want a PDF or a paper copy? Print it
+  (Ctrl/Cmd+P → Save as PDF) — it has a print stylesheet, so it comes out
+  looking like a zine rather than a screenshot of a webpage.
+- **On GitHub** — [`zine/zine.md`](zine/zine.md) is the source and reads fine
+  as plain Markdown. The only thing GitHub can't render is the `/// aside`
+  sidebars, which show up as literal `///` markers; they're proper boxes in
+  `zine.html`.
+
+Everything else below is optional extra credit, not required reading.
 
 ## Layout
 
 ```
-zine/           the zine itself, plus its pandoc build
-app/backend/    FastAPI + Pydantic — GET /items
-app/frontend/   React + TypeScript — fetches and renders it
+zine/
+  zine.md             the zine, in Markdown (the source of truth)
+  zine.html           the same zine, readable in a browser and printable
+  build.py            renders zine.md + style.css -> one self-contained zine.html
+  check_snippets.py   fails if a snippet drifts from the file it names
+  style.css           the riso-fanzine look: screen, dark, and paper
+  fonts/              display face, subset and embedded (SIL OFL, license included)
+app/backend/          FastAPI + Pydantic — GET /items
+app/frontend/         React + TypeScript — fetches and renders it
 ```
+
+CI runs both test suites, type-checks and builds the frontend, verifies every
+snippet in the zine still matches the source file it names, and fails if the
+committed `zine.html` is stale.
 
 ## Running the app
 
@@ -26,28 +50,47 @@ uv run fastapi dev        # http://localhost:8000, docs at /docs
 uv run pytest -q
 ```
 
-**Frontend** (needs Node 18+):
+**Frontend** (needs Node 20.19+ or 22.12+ — see `.nvmrc`; Vite 8 won't start on
+older ones):
 
 ```bash
 cd app/frontend
 npm install
 npm run dev                # http://localhost:5173
-npm test
-npm run build
+npm test                   # vitest
+npm run build              # type-checks, then builds
 ```
 
 Run both dev servers at once and the frontend at `:5173` will fetch its item
 list live from the backend at `:8000`.
 
-## Rendering the zine
+## Rebuilding the zine
 
-Requires [pandoc](https://pandoc.org/installing.html):
+Only needed if you edit `zine.md` or `style.css`. One command, no setup:
 
 ```bash
-cd zine
-make html        # zine.html — clean, self-contained webpage
-make pdf         # zine.pdf  — also needs a TeX engine (see Makefile)
+uv run --locked zine/build.py
 ```
+
+`build.py` declares its own dependencies inline ([PEP 723](https://peps.python.org/pep-0723/)),
+so `uv` fetches Markdown, PyMdown Extensions and Pygments into a throwaway
+environment on the fly — nothing to install, no virtualenv to activate, nothing
+added to your system. The script inlines the stylesheet, the syntax-highlighting
+theme and the display font, so the output stays a single portable file you can
+email, host anywhere, or print.
+
+Writing an aside — the boxes taped into the margins — looks like this:
+
+```markdown
+/// aside | The road not taken: Django
+Django would be the batteries-included alternative here.
+///
+```
+
+## License
+
+Code is [MIT](LICENSE); the zine's text is CC BY 4.0. The embedded display font
+is Lato, under the SIL OFL — see [`zine/fonts/`](zine/fonts/).
 
 ## Why this repo exists
 
