@@ -1,0 +1,15 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# Node
+node_modules/
+dist/
+
+# Zine build output (regenerate with `make -C zine html` / `pdf`)
+zine/zine.html
+zine/zine.pdf
+
+# OS
+.DS_Store
