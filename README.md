@@ -95,8 +95,15 @@ is Lato, under the SIL OFL — see [`zine/fonts/`](zine/fonts/).
 
 ## Why this repo exists
 
-Personal interview prep, written to be honest about being personal interview
-prep: a working refresher on the architectural choices under modern Python and
-modern JavaScript, built by actually shipping the two of them together rather
-than staging side-by-side syntax comparisons. Full framing is in the zine's
-opening section.
+Interview prep, but not only that:
+
+- **Architectural tradeoffs.** Agentic tools produce a FastAPI route or a React
+  component in seconds, and it's easy to stop noticing why the generated code
+  looks the way it does. Building one feature by hand on both sides keeps those
+  decisions visible.
+- **Current conventions.** Writing it down forces a pass over what's actually
+  current rather than what we picked up years ago.
+- **Something to print.** It renders to a zine we can read on a piece of paper,
+  away from a screen.
+
+Full framing is in the zine's opening section.

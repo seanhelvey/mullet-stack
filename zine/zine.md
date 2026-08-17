@@ -7,12 +7,13 @@ date: "Accurate as of August 2026 — dependencies will have drifted by the time
 
 # Why this exists
 
-I'm prepping for interviews, and the thing I keep losing track of isn't syntax —
+I'm prepping for interviews, and the part I want to keep sharp isn't syntax —
 it's the architecture underneath it. Agentic tools now generate a FastAPI route or
-a React component in seconds, which is great, except it means I can go a long time
-without consciously deciding *why* the generated code looks the way it does, or
-what the alternative would have been. This zine is me forcing that decision back
-into view, one small feature at a time.
+a React component in seconds, which is great, except it means you can go a long
+time without consciously deciding *why* the generated code looks the way it does,
+or what the alternative would have been. This zine is me keeping that decision in
+view, one small feature at a time. It's laid out to print, because I wanted
+to read it on paper and not on another screen.
 
 It is not a Python-vs-JavaScript showdown. That ground is well-trodden and mostly
 a waste of pixels. Instead: build one tiny real feature — a backend that returns a
