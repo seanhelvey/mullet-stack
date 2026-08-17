@@ -7,13 +7,15 @@ snippet in the text.
 
 ## Read the zine
 
-Two ways, both zero-setup:
+Three ways, all zero-setup:
 
-- **In your browser** — open [`zine/zine.html`](zine/zine.html). It's committed
-  to the repo, so it's there the moment you clone. One self-contained file:
-  no build, no server, no dependencies. Want a PDF or a paper copy? Print it
-  (Ctrl/Cmd+P → Save as PDF) — it has a print stylesheet, so it comes out
+- **[📖 Read it online](https://seanhelvey.github.io/mullet-stack/zine/zine.html)**
+  — the designed version, no clone required. Want a PDF or a paper copy? Print
+  it (Ctrl/Cmd+P → Save as PDF); it has a print stylesheet, so it comes out
   looking like a zine rather than a screenshot of a webpage.
+- **From a clone** — open [`zine/zine.html`](zine/zine.html). It's committed to
+  the repo, so it's there the moment you clone: one self-contained file, no
+  build, no server, no dependencies.
 - **On GitHub** — [`zine/zine.md`](zine/zine.md) is the source and reads fine
   as plain Markdown. The only thing GitHub can't render is the `/// aside`
   sidebars, which show up as literal `///` markers; they're proper boxes in
