@@ -20,9 +20,8 @@ list of items, and a frontend that fetches and renders it — properly on both s
 and let the actual differences surface where they're real instead of manufacturing
 them for symmetry. Python and React aren't competing answers to the same question.
 They're two different layers of one pipeline, built by two ecosystems that grew up
-solving different problems. The mullet in the title is the honest shape of that:
-JavaScript out front where strangers' browsers can see it, Python in the back where
-the data and the secrets live.
+solving different problems. Hence the mullet: JavaScript in the front, Python in
+the back.
 
 I'm still learning both of these out loud. If a take here is wrong or shallow,
 that's the working-refresher framing doing its job — better to write down what I

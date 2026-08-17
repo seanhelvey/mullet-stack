@@ -1,9 +1,8 @@
 # The Mullet Stack
 
-Business in the back, party in the front: a small zine comparing modern Python
-and modern JavaScript, built around one tiny shared feature — fetching a list
-of items — with a real FastAPI backend and a real React frontend behind every
-snippet in the text.
+JavaScript in the front, Python in the back — a zine built by shipping one tiny
+feature (fetching a list of items) across both, with a real FastAPI backend and
+a real React frontend behind every snippet in the text.
 
 ## Read the zine
 
