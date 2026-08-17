@@ -87,6 +87,17 @@ def stylesheet():
     # readable code rather than slabs of black ink.
     light = HtmlFormatter(style=LIGHT).get_style_defs(".highlight")
     dark = HtmlFormatter(style=DARK).get_style_defs(".highlight")
+
+    # Pygments ships a background colour on .highlight. On paper that is a
+    # filled rectangle behind every code block, so strip it back to the
+    # outline — and this has to come after the block above to win.
+    ink_diet = (
+        "@media print {\n"
+        "  .highlight, .highlight pre, .admonition, code, th "
+        "{ background: none; }\n"
+        "}"
+    )
+
     return "\n".join(
         [
             font_face(),
@@ -94,6 +105,7 @@ def stylesheet():
             light,
             f"@media (prefers-color-scheme: dark) {{\n{dark}\n}}",
             f"@media print {{\n{light}\n}}",
+            ink_diet,
         ]
     )
 

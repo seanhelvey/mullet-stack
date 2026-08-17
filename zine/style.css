@@ -345,10 +345,9 @@ th {
     overflow-wrap: break-word;
   }
 
-  .highlight pre {
-    padding-left: 1.4em;
-    text-indent: -1.4em;
-  }
+  /* No hanging indent here: text-indent only affects the first line of a
+     block, so inside a <pre> it shifts every line after the first and the
+     code's real indentation reads wrong. */
 
   .admonition {
     padding: 1em 1.1em 0.4em;
@@ -409,30 +408,25 @@ th {
     font-size: 10.5pt;
   }
 
-  /* Page one is a cover, not a page header: keep the ink band, let it run
-     to the paper's edge, and give it the page to itself. */
-  /* An inset panel rather than a bled one: the reader picks their own
-     margins in the print dialog, so anything depending on exact bleed
-     breaks half the time. Sized to its content so the contents list and
-     the first section follow straight on rather than each taking a page. */
+  /* No filled panels anywhere on paper — a solid masthead is most of a
+     toner cartridge. The title carries the page on type and a rule instead. */
   .masthead {
     margin: 0 0 8mm;
-    padding: 16mm 12mm 14mm;
-    background: #14110f;
-    color: #f2ede1;
+    padding: 0 0 6mm;
+    background: none;
+    color: #000;
+    border-bottom: 4pt solid #000;
     box-shadow: none;
     clip-path: none;
     break-inside: avoid;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
   }
 
   .masthead .title {
     font-size: 3.6rem;
   }
 
-  .masthead .subtitle { color: #f2ede1; }
-  .masthead .byline { color: #a49c8c; border-top-color: #3a3531; }
+  .masthead .subtitle { color: #000; }
+  .masthead .byline { color: #444; border-top-color: #bbb; }
 
   .contents {
     border-top-width: 4pt;
@@ -452,9 +446,20 @@ th {
   .admonition,
   .admonition + .admonition {
     transform: none;
+    background: none;
     border: 1.5pt solid #000;
     border-left-width: 5pt;
   }
+
+  /* Pygments and the base styles both fill these; outline them instead. */
+  .highlight,
+  .highlight pre,
+  code,
+  th {
+    background: none;
+  }
+
+  code { padding: 0; }
 
   /* Paper cannot scroll: long lines must wrap or they are simply lost off
      the right edge. The wrap has to land on the <pre>, not the wrapper. */
@@ -469,10 +474,8 @@ th {
     overflow-wrap: break-word;
   }
 
-  .highlight pre {
-    padding-left: 1.6em;
-    text-indent: -1.6em;
-  }
+  /* Same reason as the phone rules: a hanging indent inside <pre> pushes
+     every line but the first, which fakes indentation the code doesn't have. */
 
   hr { display: none; }
 }
