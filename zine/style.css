@@ -249,6 +249,44 @@ pre code {
   margin-bottom: 0.7em;
 }
 
+/* ---- diagrams -------------------------------------------------------- */
+
+/* Hand-authored inline SVG. Strokes and text use currentColor so the same
+   drawing works on cream, on black, and on paper without a second copy. */
+.diagram {
+  margin: 2.4em 0;
+  color: var(--ink);
+}
+
+.diagram svg {
+  display: block;
+  width: 100%;
+  max-width: 30em;
+  height: auto;
+  margin: 0 auto;
+}
+
+/* The timeline's viewBox is wider than the chain's, so at the same max-width
+   its text scales down instead of up. Widen it to the column so the text
+   comes out close to body size instead of noticeably smaller. */
+.diagram--wide svg {
+  max-width: 38em;
+}
+
+.diagram text {
+  font-family: var(--mono);
+  fill: currentColor;
+}
+
+.diagram figcaption {
+  font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.82em;
+  line-height: 1.45;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 0.9em;
+}
+
 blockquote {
   border-left: 4px solid var(--rule);
   margin-left: 0;
@@ -457,7 +495,11 @@ th {
   /* Short things stay whole. Code listings are long enough that refusing to
      break them leaves craters at the bottom of the page, so let them run over
      and keep a few lines together on each side of the break instead. */
-  .admonition, blockquote, table { break-inside: avoid; }
+  .admonition, blockquote, table, .diagram { break-inside: avoid; }
+
+  /* Line art already, so it costs almost nothing to print. */
+  .diagram { margin: 1.6em 0; }
+  .diagram svg { max-width: 36em; }
   .highlight { break-inside: auto; orphans: 4; widows: 4; }
 
   .admonition,

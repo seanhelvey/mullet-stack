@@ -8,22 +8,28 @@ date: "Accurate as of August 2026. Dependencies will have drifted by the time yo
 # Why this exists
 
 I wanted to create a field guide to stay current on modern full-stack web
-development with JavaScript and Python. While it is so easy to generate a ton of
-code these days, we still need to understand both low level syntax and higher
+development with JavaScript and Python. It is so easy to generate a ton of code
+these days, but we still need to understand both low level syntax and higher
 level trade-offs between different libraries and frameworks.
 
-React and TypeScript have matured into something you can be productive in
-without fighting the tooling, and the browser is still where users actually are.
-Python has several great web frameworks and is widely used for AI. Hence the
-mullet: JavaScript in the front, Python in the back.
+This project is not intended to be authoritative. I chose what seems like the
+best combination of tools right now and tried to describe other options along
+the way. My current full-time job is maintaining a Django app with a jQuery
+front-end, so this is just me exploring and learning in public. I tried to
+format this as a "zine." There are diagrams and a print stylesheet, but let's be
+honest: it is a fancy blog post :)
 
-We build one tiny real feature: a backend that returns a list of items, and a
-frontend that fetches and renders it. Both ends describe the same `Item`, both
-have a type system they're proud of, and neither one knows the other exists. How
-they come together is the real story.
+React and TypeScript have matured a lot in the last couple of years. Python's
+web frameworks have evolved too, while it is also widely used for AI. Hence the
+mullet: JavaScript in the front, Python in the back. Both ends describe the same
+`Item` differently. What is the best way to bring these two languages together
+into one stack?
 
-The example code is in this repo (`app/backend`, `app/frontend`). I'm a beginner
-for life and feedback is welcome!
+The snippets ahead are windows into the repo rather than a build-along, so the
+fastest way to follow is to clone it, start both servers, and poke at the files
+as you read. It is a backend that returns a list of items, and a frontend that
+fetches it. The example code is in this repo (`app/backend`, `app/frontend`).
+Feedback is welcome!
 
 ---
 
@@ -145,9 +151,11 @@ depends entirely on what you bring in to enforce them.
 /// aside | The roads not taken: Django, Flask, Ninja
 Django is the batteries-included option: if you expect an admin panel and an ORM
 out of the box, that's the trade against FastAPI's minimal-core-plus-libraries
-approach. Flask is the older minimal one, close to FastAPI in spirit but without
-the type hints doing double duty as validation and OpenAPI docs. Django Ninja
-splits the difference, putting FastAPI-style typed routes on top of Django's ORM
+approach, although async hasn't fully landed in Django at this point. Flask is
+the older minimal approach, close to FastAPI in spirit but without real async
+I/O (its `async def` views still run through a thread pool) and without type
+hints doing double duty as validation and OpenAPI docs. Django Ninja splits the
+difference, putting FastAPI-style async and typed routes on top of Django's ORM
 and admin. Worth knowing they exist, not worth a detour here.
 ///
 
@@ -223,6 +231,35 @@ once, at build time. Pydantic does the opposite: it keeps its type information
 around specifically so it can enforce it while the program is running.
 Same-looking type declaration, two completely different lifetimes.
 
+<figure class="diagram diagram--wide">
+<svg viewBox="0 0 640 232" role="img" aria-label="A timeline of one request. TypeScript checks during the build and is then erased. Pydantic checks on the server while the request is handled. When the response reaches the browser, nothing checks it at all.">
+<defs>
+<marker id="tip2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<polygon points="0,0 10,5 0,10" fill="currentColor"/>
+</marker>
+</defs>
+<line x1="20" y1="128" x2="612" y2="128" stroke="currentColor" stroke-width="2" marker-end="url(#tip2)"/>
+<line x1="216" y1="120" x2="216" y2="136" stroke="currentColor" stroke-width="2"/>
+<line x1="412" y1="120" x2="412" y2="136" stroke="currentColor" stroke-width="2"/>
+<path d="M 28 96 L 28 76 L 208 76 L 208 96" fill="none" stroke="currentColor" stroke-width="2"/>
+<text x="118" y="45" text-anchor="middle" font-size="15">TypeScript</text>
+<text x="118" y="64" text-anchor="middle" font-size="13">checks, then erases</text>
+<path d="M 224 96 L 224 76 L 404 76 L 404 96" fill="none" stroke="currentColor" stroke-width="2"/>
+<text x="314" y="45" text-anchor="middle" font-size="15">Pydantic</text>
+<text x="314" y="64" text-anchor="middle" font-size="13">checks every response</text>
+<path d="M 420 96 L 420 76 L 600 76 L 600 96" fill="none" stroke="var(--party)" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="510" y="45" text-anchor="middle" font-size="15" fill="var(--party)">nothing</text>
+<text x="510" y="64" text-anchor="middle" font-size="13" fill="var(--party)">nothing left to check</text>
+<text x="118" y="158" text-anchor="middle" font-size="15">build time</text>
+<text x="118" y="177" text-anchor="middle" font-size="13">npm run build</text>
+<text x="314" y="158" text-anchor="middle" font-size="15">server handles it</text>
+<text x="314" y="177" text-anchor="middle" font-size="13">GET /items</text>
+<text x="510" y="158" text-anchor="middle" font-size="15">browser receives it</text>
+<text x="510" y="177" text-anchor="middle" font-size="13">response.json()</text>
+</svg>
+<figcaption>Each type system guards one end of the request and neither covers the far side.</figcaption>
+</figure>
+
 /// aside | The road not taken: Vue and Svelte
 Vue's single-file components or Svelte's compiler-driven approach would express
 this same list with noticeably less boilerplate than React's hooks.
@@ -230,10 +267,10 @@ this same list with noticeably less boilerplate than React's hooks.
 
 /// aside | The elephant: Next.js
 It's the more common starting point than plain Vite (build tool) + React these
-days, so it deserves naming rather than a footnote. Next.js is React plus a
-framework's worth of opinions: file-based routing, and server components that
-fetch `/items` during render on the server instead of from `useEffect` in the
-browser.
+days, so it deserves a footnote. Next.js is React plus a framework's worth of
+opinions: file-based routing, and server components that fetch `/items` during
+render on the server instead of from `useEffect` in the browser. If you want
+full-stack JavaScript this is currently the default.
 ///
 
 ---
@@ -344,9 +381,40 @@ uv run python scripts/dump_openapi.py    # backend, writes openapi.json
 npm run generate:types                   # frontend, writes src/api-types.ts
 ```
 
+<figure class="diagram">
+<svg viewBox="0 0 400 396" role="img" aria-label="The Item shape starts in the Pydantic model, is dumped to an OpenAPI schema, generated into TypeScript types, and consumed by the React component. Only the first and last files are written by hand.">
+<defs>
+<marker id="tip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+<polygon points="0,0 10,5 0,10" fill="currentColor"/>
+</marker>
+</defs>
+<rect x="20" y="8" width="210" height="54" fill="none" stroke="currentColor" stroke-width="2"/>
+<text x="125" y="31" text-anchor="middle" font-size="13">app/models.py</text>
+<text x="125" y="49" text-anchor="middle" font-size="11">class Item(BaseModel)</text>
+<line x1="125" y1="62" x2="125" y2="106" stroke="currentColor" stroke-width="2" marker-end="url(#tip)"/>
+<text x="240" y="89" font-size="11">dump_openapi.py</text>
+<rect x="20" y="112" width="210" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="125" y="139" text-anchor="middle" font-size="13">openapi.json</text>
+<line x1="125" y1="154" x2="125" y2="198" stroke="currentColor" stroke-width="2" marker-end="url(#tip)"/>
+<text x="240" y="181" font-size="11">openapi-typescript</text>
+<rect x="20" y="204" width="210" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="125" y="231" text-anchor="middle" font-size="13">src/api-types.ts</text>
+<line x1="125" y1="246" x2="125" y2="290" stroke="currentColor" stroke-width="2" marker-end="url(#tip)"/>
+<text x="240" y="273" font-size="11">re-exported by types.ts</text>
+<rect x="20" y="296" width="210" height="54" fill="none" stroke="currentColor" stroke-width="2"/>
+<text x="125" y="319" text-anchor="middle" font-size="13">src/ItemList.tsx</text>
+<text x="125" y="337" text-anchor="middle" font-size="11">useState&lt;Item[]&gt;</text>
+<line x1="20" y1="371" x2="50" y2="371" stroke="currentColor" stroke-width="2"/>
+<text x="57" y="375" font-size="11">written by hand</text>
+<line x1="170" y1="371" x2="200" y2="371" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="207" y="375" font-size="11">generated</text>
+</svg>
+<figcaption>The shape is authored once, in Python. Everything downstream is derived from it.</figcaption>
+</figure>
+
 `types.ts` is now three lines that re-export the generated `Item`, and CI fails
-if either file is stale. The two type systems are one type system with a
-direction: Python defines the shape, TypeScript derives it.
+if either file is stale. The two type systems are now working together
+automatically: Python defines the shape, TypeScript derives it.
 
 Switching over immediately caught a mistake in the version we had been keeping
 by hand. It said `description: string | null`, required. The schema says
@@ -365,8 +433,7 @@ you. Weekly downloads and versions as of August 2026:
 FastAPI's own docs point at Hey API, which is worth knowing even though it is
 still pre-1.0. We went with `openapi-typescript` because the fetch call above
 was already written and only the types were missing, and it happens to be both
-the most downloaded and the one with a settled major version. If the frontend
-were bigger, generating the client too would probably win.
+the most downloaded and the one with a settled major version.
 
 That closes the gap I started with. The two declarations cannot drift apart
 anymore, because only one of them is written by a person.
@@ -405,20 +472,21 @@ while you build, then stripped out before anything runs.
 
 That difference is what lets the two ends agree. Pydantic's types are real
 enough to describe, so FastAPI publishes a schema from the back, and the front
-derives its types from it and checks them at build time. Python defines the
-shape, TypeScript derives it.
+derives its types from it and checks them at build time.
 
-If I keep one thing from building this, it's that the annotations are the easy
-part. What matters is what enforces them, and when.
+When I started this project I was most curious to see a juxtaposition of the
+differences in syntax between modern JavaScript and Python. What turned out to
+matter more is the strong versus weak split underneath. Both languages are
+dynamic, but Python refuses to add a number to a string and JavaScript happily
+concatenates. Neither Pydantic nor TypeScript changes that. They each bolt a
+checking layer on top, at opposite ends of the program's life.
 
 /// aside | Off to one side: concurrency
-Not part of the thread above, but the difference I found most surprising. Node's
-event loop is the only model it has ever had, so every I/O call in the ecosystem
-grew up async. Python added async later, and the seam between sync and async
-code runs through the whole ecosystem. FastAPI sits right on it: routes can be
-`def` or `async def`, and putting blocking work in an `async def` handler stalls
-the event loop for every other request the process is serving, not just that
-one.
+Every I/O call in Node's event loop is async out of the box. Python added async
+later, and the seam between sync and async code runs through the whole
+ecosystem. FastAPI sits right on it: routes can be `def` or `async def`, and
+putting blocking work in an `async def` handler stalls the event loop for every
+other request the process is serving, not just that one.
 
 The GIL is the other half of that story, keeping multi-threaded Python off more
 than one core at a time. Free-threaded builds landed experimentally in 3.13 and
