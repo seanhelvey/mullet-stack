@@ -41,12 +41,12 @@ different ports.
 **Backend.** Python projects declare dependencies in `pyproject.toml`:
 
 ```toml
+# pyproject.toml
 [project]
 name = "mullet-backend"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.115",
-    "uvicorn[standard]>=0.30",
+    "fastapi[standard]>=0.115",
 ]
 ```
 

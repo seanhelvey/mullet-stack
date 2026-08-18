@@ -26,12 +26,12 @@ import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 FENCE = re.compile(r"^```(\w+)?\n(.*?)^```$", re.M | re.S)
-MARKER = re.compile(r"^(?:#|//)\s*(\S+\.(?:py|ts|tsx))\s*$")
+MARKER = re.compile(r"^(?:#|//)\s*(\S+\.(?:py|toml|ts|tsx))\s*$")
 
 
 def source_for(named: str) -> pathlib.Path:
     """index.md names files relative to their own app; .py is the backend."""
-    app = "backend" if named.endswith(".py") else "frontend"
+    app = "backend" if named.endswith((".py", ".toml")) else "frontend"
     return ROOT / "app" / app / named
 
 

@@ -4,8 +4,7 @@ version = "0.1.0"
 description = "FastAPI half of the mullet stack: a single /items list endpoint."
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.115",
-    "uvicorn[standard]>=0.30",
+    "fastapi[standard]>=0.115",
 ]
 
 [dependency-groups]

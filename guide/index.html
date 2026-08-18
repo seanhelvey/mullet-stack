@@ -782,12 +782,12 @@ Feedback is welcome!</p>
 of each running side by side. Nothing shared yet, no wiring, just &ldquo;hello&rdquo; on two
 different ports.</p>
 <p><strong>Backend.</strong> Python projects declare dependencies in <code>pyproject.toml</code>:</p>
-<div class="highlight"><pre><span></span><code><span class="k">[project]</span>
+<div class="highlight"><pre><span></span><code><span class="c1"># pyproject.toml</span>
+<span class="k">[project]</span>
 <span class="n">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"mullet-backend"</span>
 <span class="n">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"&gt;=3.12"</span>
 <span class="n">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">    </span><span class="s2">"fastapi&gt;=0.115"</span><span class="p">,</span>
-<span class="w">    </span><span class="s2">"uvicorn[standard]&gt;=0.30"</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">"fastapi[standard]&gt;=0.115"</span><span class="p">,</span>
 <span class="p">]</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>sync<span class="w">                    </span><span class="c1"># resolves and installs into a local .venv</span>
