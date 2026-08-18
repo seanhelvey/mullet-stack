@@ -20,7 +20,7 @@ mullet: JavaScript in the front, Python in the back.
 We build one tiny real feature: a backend that returns a list of items, and a
 frontend that fetches and renders it. Both ends describe the same `Item`, both
 have a type system they're proud of, and neither one knows the other exists. How
-they end up agreeing is the real story.
+they come together is the real story.
 
 The example code is in this repo (`app/backend`, `app/frontend`). I'm a beginner
 for life and feedback is welcome!
@@ -110,8 +110,8 @@ def list_items() -> list[Item]:
     return ITEMS
 ```
 
-`uv run fastapi dev` and `localhost:8000/items` gets back a JSON array. FastAPI
-reads the type hints on `Item` and the route signature and generates an
+`uv run fastapi dev` and `localhost:8000/items` returns a JSON array. FastAPI
+reads the type hints on `Item` and the route signature then generates an
 interactive OpenAPI page from them at `localhost:8000/docs` without a separate
 schema file to keep in sync.
 
@@ -137,11 +137,10 @@ syntax, completely different enforcement.
 But `GET /items` takes no request body, so there's nothing incoming for Pydantic
 to reject. Send a malformed payload and you'll get a `200`, because the handler
 never asked for input. `response_model=list[Item]` guards the way *out*: it
-validates what the handler returns. The 422-on-bad-input story everyone tells
-about FastAPI is real, but it belongs to endpoints that declare a request body
-or typed query params. That's typical (pun intended) for Python's
-gradual-typing: types are always optional, and how much they *do* depends
-entirely on what you bring in to enforce them.
+validates what the handler returns. FastAPI can help with input validation, but
+only with endpoints that declare a request body or typed query params. That's
+Python's gradual typing: annotations are always optional, and how much they *do*
+depends entirely on what you bring in to enforce them.
 
 /// aside | The roads not taken: Django, Flask, Ninja
 Django is the batteries-included option: if you expect an admin panel and an ORM
@@ -159,7 +158,7 @@ and admin. Worth knowing they exist, not worth a detour here.
 We fetch that list and render it with JavaScript:
 
 ```typescript
-// the generated Item, with its doc comments trimmed
+// the Item the frontend works with, doc comments trimmed
 Item: {
     id: number;
     name: string;
@@ -205,7 +204,7 @@ export function ItemList() {
 }
 ```
 
-Put that `Item` next to `Item` from `models.py` and see that the syntax is very
+Compare that `Item` to `Item` from `models.py` above. The syntax is very
 similar, but the kind of typing is much different. Pydantic's `Item` is a class:
 two Python objects are only interchangeable if one is actually built as (or
 subclasses) that class. TypeScript's `Item` is an interface describing a
@@ -325,18 +324,20 @@ app.add_middleware(
 )
 ```
 
-We had an `Item` in `models.py` and an `Item` in `types.ts`, both typed by hand,
-with nothing anywhere checking that they still agree. Rename a field on the
-backend and the frontend compiles happily. It breaks later, in a browser, on
-someone else's machine. But FastAPI publishes that contract already. Every route
-feeds an OpenAPI document, generated from the same Pydantic model:
+Now the `Item` question. There is one in `models.py` and one in `types.ts`,
+describing the same thing. Keep two copies by hand and nothing anywhere checks
+they still agree: rename a field on the backend and the frontend compiles
+happily, then breaks later, in a browser, on someone else's machine.
+
+But FastAPI publishes that contract already. Every route feeds an OpenAPI
+document, generated from the same Pydantic model:
 
 ```json
 "in_stock": { "type": "boolean", "default": true, "title": "In Stock" }
 ```
 
-So the hand-written version was a copy of a machine-readable file we already
-had. Now the backend dumps that file and the frontend generates from it:
+So a hand-written `types.ts` is a copy of a machine-readable file we already
+have. Instead the backend dumps that file and the frontend generates from it:
 
 ```bash
 uv run python scripts/dump_openapi.py    # backend, writes openapi.json
@@ -347,10 +348,10 @@ npm run generate:types                   # frontend, writes src/api-types.ts
 if either file is stale. The two type systems are one type system with a
 direction: Python defines the shape, TypeScript derives it.
 
-Generating it immediately found a mistake we had made by hand: we wrote
-`description: string | null`, required. The schema says `description?:`,
-optional, because the field has a default. Small, but exactly the kind of thing
-that drifts unnoticed.
+Switching over immediately caught a mistake in the version we had been keeping
+by hand. It said `description: string | null`, required. The schema says
+`description?:`, optional, because the field has a default. Small, but exactly
+the kind of thing that drifts unnoticed.
 
 There are a few tools for this, and they differ mostly in how much they hand
 you. Weekly downloads and versions as of August 2026:

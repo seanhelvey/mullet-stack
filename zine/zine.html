@@ -789,7 +789,7 @@ mullet: JavaScript in the front, Python in the back.</p>
 <p>We build one tiny real feature: a backend that returns a list of items, and a
 frontend that fetches and renders it. Both ends describe the same <code>Item</code>, both
 have a type system they&rsquo;re proud of, and neither one knows the other exists. How
-they end up agreeing is the real story.</p>
+they come together is the real story.</p>
 <p>The example code is in this repo (<code>app/backend</code>, <code>app/frontend</code>). I&rsquo;m a beginner
 for life and feedback is welcome!</p>
 <hr />
@@ -855,8 +855,8 @@ deeper another time to learn more.</p>
 <span class="k">def</span><span class="w"> </span><span class="nf">list_items</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
     <span class="k">return</span> <span class="n">ITEMS</span>
 </code></pre></div>
-<p><code>uv run fastapi dev</code> and <code>localhost:8000/items</code> gets back a JSON array. FastAPI
-reads the type hints on <code>Item</code> and the route signature and generates an
+<p><code>uv run fastapi dev</code> and <code>localhost:8000/items</code> returns a JSON array. FastAPI
+reads the type hints on <code>Item</code> and the route signature then generates an
 interactive OpenAPI page from them at <code>localhost:8000/docs</code> without a separate
 schema file to keep in sync.</p>
 <p>Which is worth pausing on, because those hints do nothing by themselves.
@@ -877,11 +877,10 @@ syntax, completely different enforcement.</p>
 <p>But <code>GET /items</code> takes no request body, so there&rsquo;s nothing incoming for Pydantic
 to reject. Send a malformed payload and you&rsquo;ll get a <code>200</code>, because the handler
 never asked for input. <code>response_model=list[Item]</code> guards the way <em>out</em>: it
-validates what the handler returns. The 422-on-bad-input story everyone tells
-about FastAPI is real, but it belongs to endpoints that declare a request body
-or typed query params. That&rsquo;s typical (pun intended) for Python&rsquo;s
-gradual-typing: types are always optional, and how much they <em>do</em> depends
-entirely on what you bring in to enforce them.</p>
+validates what the handler returns. FastAPI can help with input validation, but
+only with endpoints that declare a request body or typed query params. That&rsquo;s
+Python&rsquo;s gradual typing: annotations are always optional, and how much they <em>do</em>
+depends entirely on what you bring in to enforce them.</p>
 <div class="admonition aside">
 <p class="admonition-title">The roads not taken: Django, Flask, Ninja</p>
 <p>Django is the batteries-included option: if you expect an admin panel and an ORM
@@ -894,7 +893,7 @@ and admin. Worth knowing they exist, not worth a detour here.</p>
 <hr />
 <h1 id="3-frontend-react-typescript">3. Frontend: React + TypeScript</h1>
 <p>We fetch that list and render it with JavaScript:</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// the generated Item, with its doc comments trimmed</span>
+<div class="highlight"><pre><span></span><code><span class="c1">// the Item the frontend works with, doc comments trimmed</span>
 <span class="nx">Item</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
 <span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
@@ -937,7 +936,7 @@ and admin. Worth knowing they exist, not worth a detour here.</p>
 <span class="w">  </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Put that <code>Item</code> next to <code>Item</code> from <code>models.py</code> and see that the syntax is very
+<p>Compare that <code>Item</code> to <code>Item</code> from <code>models.py</code> above. The syntax is very
 similar, but the kind of typing is much different. Pydantic&rsquo;s <code>Item</code> is a class:
 two Python objects are only interchangeable if one is actually built as (or
 subclasses) that class. TypeScript&rsquo;s <code>Item</code> is an interface describing a
@@ -1041,25 +1040,26 @@ unless the server says that origin is allowed:</p>
     <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">"GET"</span><span class="p">],</span>
 <span class="p">)</span>
 </code></pre></div>
-<p>We had an <code>Item</code> in <code>models.py</code> and an <code>Item</code> in <code>types.ts</code>, both typed by hand,
-with nothing anywhere checking that they still agree. Rename a field on the
-backend and the frontend compiles happily. It breaks later, in a browser, on
-someone else&rsquo;s machine. But FastAPI publishes that contract already. Every route
-feeds an OpenAPI document, generated from the same Pydantic model:</p>
+<p>Now the <code>Item</code> question. There is one in <code>models.py</code> and one in <code>types.ts</code>,
+describing the same thing. Keep two copies by hand and nothing anywhere checks
+they still agree: rename a field on the backend and the frontend compiles
+happily, then breaks later, in a browser, on someone else&rsquo;s machine.</p>
+<p>But FastAPI publishes that contract already. Every route feeds an OpenAPI
+document, generated from the same Pydantic model:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">"in_stock"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w"> </span><span class="nt">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"In Stock"</span><span class="w"> </span><span class="p">}</span>
 </code></pre></div>
-<p>So the hand-written version was a copy of a machine-readable file we already
-had. Now the backend dumps that file and the frontend generates from it:</p>
+<p>So a hand-written <code>types.ts</code> is a copy of a machine-readable file we already
+have. Instead the backend dumps that file and the frontend generates from it:</p>
 <div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/dump_openapi.py<span class="w">    </span><span class="c1"># backend, writes openapi.json</span>
 npm<span class="w"> </span>run<span class="w"> </span>generate:types<span class="w">                   </span><span class="c1"># frontend, writes src/api-types.ts</span>
 </code></pre></div>
 <p><code>types.ts</code> is now three lines that re-export the generated <code>Item</code>, and CI fails
 if either file is stale. The two type systems are one type system with a
 direction: Python defines the shape, TypeScript derives it.</p>
-<p>Generating it immediately found a mistake we had made by hand: we wrote
-<code>description: string | null</code>, required. The schema says <code>description?:</code>,
-optional, because the field has a default. Small, but exactly the kind of thing
-that drifts unnoticed.</p>
+<p>Switching over immediately caught a mistake in the version we had been keeping
+by hand. It said <code>description: string | null</code>, required. The schema says
+<code>description?:</code>, optional, because the field has a default. Small, but exactly
+the kind of thing that drifts unnoticed.</p>
 <p>There are a few tools for this, and they differ mostly in how much they hand
 you. Weekly downloads and versions as of August 2026:</p>
 <table>
