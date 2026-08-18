@@ -387,9 +387,11 @@ th {
 
 /* ---- paper ---------------------------------------------------------- */
 
+/* No `size` here on purpose: hardcoding A4 makes a Letter printer scale the
+   whole page down to fit, which shrinks the type and inflates every margin.
+   Leaving it out uses whatever paper the print dialog is set to. */
 @page {
-  size: A4;
-  margin: 16mm 15mm;
+  margin: 14mm 13mm;
 }
 
 @media print {

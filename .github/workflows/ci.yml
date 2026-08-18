@@ -25,6 +25,13 @@ jobs:
       - run: uv sync --locked
       - run: uv run pytest -q
 
+      # The frontend generates its types from this file, so a route or model
+      # change that isn't reflected here would silently skew the two ends.
+      - name: Committed openapi.json is up to date
+        run: |
+          uv run python scripts/dump_openapi.py
+          git diff --exit-code -- openapi.json
+
   frontend:
     runs-on: ubuntu-latest
     defaults:
@@ -40,6 +47,13 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build # tsc --noEmit runs here too
+
+      # src/api-types.ts is generated from the backend schema. This is the
+      # check that makes the two type systems one type system.
+      - name: Generated api-types.ts is up to date
+        run: |
+          npm run generate:types
+          git diff --exit-code -- src/api-types.ts
 
   zine:
     runs-on: ubuntu-latest

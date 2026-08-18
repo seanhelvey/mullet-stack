@@ -401,9 +401,11 @@ th {
 
 /* ---- paper ---------------------------------------------------------- */
 
+/* No `size` here on purpose: hardcoding A4 makes a Letter printer scale the
+   whole page down to fit, which shrinks the type and inflates every margin.
+   Leaving it out uses whatever paper the print dialog is set to. */
 @page {
-  size: A4;
-  margin: 16mm 15mm;
+  margin: 14mm 13mm;
 }
 
 @media print {
@@ -742,8 +744,8 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <body>
 <header class="masthead">
 <h1 class="title">The Mullet Stack</h1>
-<p class="subtitle">A working refresher on modern Python and modern JavaScript, built by shipping one feature across both</p>
-<p class="byline">Sean Helvey · Accurate as of August 2026 — dependencies will have drifted by the time you read this</p>
+<p class="subtitle">A working refresher on modern Python and modern JavaScript</p>
+<p class="byline">Sean Helvey · Accurate as of August 2026. Dependencies will have drifted by the time you read this</p>
 </header>
 <nav class="contents">
 <h2>Contents</h2>
@@ -753,40 +755,26 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#1-setting-up">1. Setting up</a></li>
 <li><a href="#2-backend-fastapi-pydantic">2. Backend: FastAPI + Pydantic</a></li>
 <li><a href="#3-frontend-react-typescript">3. Frontend: React + TypeScript</a></li>
-<li><a href="#4-connecting-rest-vs-graphql">4. Connecting: REST vs GraphQL</a></li>
+<li><a href="#4-connecting-where-the-types-stop">4. Connecting: where the types stop</a></li>
 <li><a href="#5-testing-what-we-built">5. Testing what we built</a></li>
-<li><a href="#6-what-actually-turned-out-to-differ">6. What actually turned out to differ</a></li>
+<li><a href="#6-conclusion">6. Conclusion</a></li>
 </ul>
 </div>
 
 </nav>
 <h1 id="why-this-exists">Why this exists</h1>
-<p>I&rsquo;m prepping for interviews, and the part I want to keep sharp isn&rsquo;t syntax —
-it&rsquo;s the architecture underneath it. Agentic tools now generate a FastAPI route or
-a React component in seconds, which is great, except it means you can go a long
-time without consciously deciding <em>why</em> the generated code looks the way it does,
-or what the alternative would have been. This zine is me keeping that decision in
-view, one small feature at a time. It&rsquo;s laid out to print, because I wanted
-to read it on paper and not on another screen.</p>
-<p>It is not a Python-vs-JavaScript showdown. That ground is well-trodden and mostly
-a waste of pixels. Instead: build one tiny real feature — a backend that returns a
-list of items, and a frontend that fetches and renders it — properly on both sides,
-and let the actual differences surface where they&rsquo;re real instead of manufacturing
-them for symmetry. Python and React aren&rsquo;t competing answers to the same question.
-They&rsquo;re two different layers of one pipeline, built by two ecosystems that grew up
-solving different problems. Hence the mullet: JavaScript in the front, Python in
-the back.</p>
-<p>I&rsquo;m still learning both of these out loud. If a take here is wrong or shallow,
-that&rsquo;s the working-refresher framing doing its job — better to write down what I
-currently believe and be correctable than to perform authority I don&rsquo;t have.</p>
-<p>The whole thing is backed by a real, small, running app in this repo
-(<code>app/backend</code>, <code>app/frontend</code>) — every snippet below is lifted from code that
-actually runs and passes its tests, occasionally trimmed to the lines under
-discussion, never invented for the page.</p>
+<p>I&rsquo;m prepping for interviews. It&rsquo;s so easy to generate a FastAPI route or a React
+component in seconds these days, I wanted to create a field guide for myself to
+stay current on syntax, architecture, and ecosystem. It&rsquo;s laid out to print to
+give my eyes a break and make it fun to share.</p>
+<p>We build one tiny real feature: a backend that returns a list of items, and a
+frontend that fetches and renders it. Hence the mullet: JavaScript in the front,
+Python in the back. The example code is in this repo (<code>app/backend</code>,
+<code>app/frontend</code>). I&rsquo;m a beginner for life and feedback is welcome!</p>
 <hr />
 <h1 id="1-setting-up">1. Setting up</h1>
-<p>Before either side does anything interesting, get the smallest possible version of
-each running side by side. Nothing shared yet, no wiring — just &ldquo;hello&rdquo; on two
+<p>Before either side does anything interesting, get the smallest possible version
+of each running side by side. Nothing shared yet, no wiring, just &ldquo;hello&rdquo; on two
 different ports.</p>
 <p><strong>Backend.</strong> Python projects declare dependencies in <code>pyproject.toml</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="k">[project]</span>
@@ -809,27 +797,15 @@ uv<span class="w"> </span>run<span class="w"> </span>fastapi<span class="w"> </s
 <div class="highlight"><pre><span></span><code>npm<span class="w"> </span>install<span class="w">                </span><span class="c1"># resolves and installs into node_modules</span>
 npm<span class="w"> </span>run<span class="w"> </span>dev<span class="w">                </span><span class="c1"># serves on :5173, reloads on save</span>
 </code></pre></div>
-<p>Two commands, two dev servers, nothing talking to each other yet. Point a browser
-at <code>:8000/docs</code> and <code>:5173</code> and you have two blank slates.</p>
-<p><strong>A packaging note, since I&rsquo;m doing this live anyway.</strong> <code>uv sync</code> and <code>npm install</code>
-look like the same step, but the resolvers underneath make different bets. npm
-resolves a deep, often-duplicated tree of transitive dependencies and — by
-default — lets any package in that tree run arbitrary code at install time via
-<code>postinstall</code> scripts. That&rsquo;s a real, frequently-exploited supply-chain surface;
-it&rsquo;s why <code>npm audit</code> exists and why lockfile review matters more than it looks
-like it should. Python&rsquo;s wheel format sidesteps most of that: a wheel is
-pre-built, and installing one just copies files — no code runs. The exposure
-moves earlier, to whoever built the wheel, not to everyone who installs it. uv
-writes a lockfile (<code>uv.lock</code>) the same way <code>package-lock.json</code> does, so both
-ecosystems now default to reproducible installs — that convergence is recent
-history, not something either language shipped with originally. Where they still
-differ is trust model, not reproducibility: PyPI package names are a flat global
-namespace with no scoping, same as npm&rsquo;s unscoped packages, so typosquatting risk
-exists on both sides and neither has fully solved it.</p>
+<p>Two commands, two dev servers. Point a browser at <code>:8000/docs</code> and <code>:5173</code> and
+you have the front and back ends.</p>
+<p><strong>A packaging note.</strong> <code>uv sync</code> and <code>npm install</code> look like the same step, but
+npm ran arbitrary code at install time via lifecycle scripts until npm 12 turned
+that off by default in July 2026, while Python wheels never did. Worth digging
+deeper another time to learn more.</p>
 <hr />
 <h1 id="2-backend-fastapi-pydantic">2. Backend: FastAPI + Pydantic</h1>
-<p>This is Python&rsquo;s whole job in this build: define the shape of an item, and serve
-a list of them.</p>
+<p>We use Python on the backend to define the shape and serve a list of items:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># app/models.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
 
@@ -858,54 +834,53 @@ a list of them.</p>
 <span class="k">def</span><span class="w"> </span><span class="nf">list_items</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Item</span><span class="p">]:</span>
     <span class="k">return</span> <span class="n">ITEMS</span>
 </code></pre></div>
-<p><code>uv run fastapi dev</code> and <code>curl localhost:8000/items</code> gets back a JSON array. So
-does a browser at <code>localhost:8000/docs</code> — FastAPI reads the type hints on <code>Item</code>
-and the route signature and generates an interactive OpenAPI page from them,
-without a separate schema file to keep in sync.</p>
-<p>The thing worth naming here, because the code makes it concrete instead of
-abstract: Python&rsquo;s type hints are not enforced by the interpreter. Write the
-same annotation on a plain class and nothing stops you at runtime —</p>
+<p><code>uv run fastapi dev</code> and <code>localhost:8000/items</code> gets back a JSON array. FastAPI
+reads the type hints on <code>Item</code> and the route signature and generates an
+interactive OpenAPI page from them at <code>localhost:8000/docs</code> without a separate
+schema file to keep in sync.</p>
+<p>Here&rsquo;s the part that took me a while to internalize: Python&rsquo;s type hints are not
+enforced by the interpreter. Write the same annotation on a plain class and
+nothing stops you at runtime:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Plain</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
 
 <span class="n">Plain</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="s2">"not a number"</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>    <span class="c1"># 'not a number', no complaint</span>
 </code></pre></div>
-<p>— because hints are documentation and a hook for external tools like mypy or
-pyright, checked before the code ever runs, not while it runs.</p>
-<p>Pydantic is what closes that gap. <code>Item</code> carries the identical annotations, but
-because it&rsquo;s a <code>BaseModel</code> those annotations became a runtime contract:
-<code>Item(id="not a number", name="x")</code> raises <code>ValidationError</code> on the spot. Same
-hints, same syntax, completely different enforcement — and the difference is a
-library you chose to import, not anything the language did for you.</p>
-<p>Worth being precise about where that contract actually sits on this endpoint,
-though, because it&rsquo;s easy to overclaim. <code>GET /items</code> takes no request body, so
-there&rsquo;s nothing incoming for Pydantic to reject — throw a malformed payload at
-it and you&rsquo;ll get a cheerful <code>200</code>, because the handler never asked for input.
-<code>response_model=list[Item]</code> guards the way <em>out</em>: it validates what the handler
-returns. The 422-on-bad-input story everyone tells about FastAPI is real, but it
-belongs to endpoints that declare a request body or typed query params. This one
-doesn&rsquo;t. That&rsquo;s very in character for Python&rsquo;s gradual-typing story: types are
-always optional, and how much they <em>do</em> depends entirely on what you bring in to
-enforce them — and on where you actually wired it in.</p>
+<p>Hints are documentation and a hook for external tools like mypy or pyright,
+checked before the code ever runs, not while it runs. Pydantic is what closes
+that gap. <code>Item</code> carries the identical annotations, but because it&rsquo;s a
+<code>BaseModel</code> those annotations became a runtime contract: <code>Item(id="not a
+number", name="x")</code> raises <code>ValidationError</code> on the spot. Same hints, same
+syntax, completely different enforcement.</p>
+<p>But <code>GET /items</code> takes no request body, so there&rsquo;s nothing incoming for Pydantic
+to reject. Send a malformed payload and you&rsquo;ll get a <code>200</code>, because the handler
+never asked for input. <code>response_model=list[Item]</code> guards the way <em>out</em>: it
+validates what the handler returns. The 422-on-bad-input story everyone tells
+about FastAPI is real, but it belongs to endpoints that declare a request body
+or typed query params. That&rsquo;s typical (pun intended) for Python&rsquo;s gradual-typing
+story: types are always optional, and how much they <em>do</em> depends entirely on
+what you bring in to enforce them.</p>
 <div class="admonition aside">
-<p class="admonition-title">The road not taken: Django</p>
-<p>If this were a full CRUD app with an admin panel and an ORM expected out of the
-box, Django would be the batteries-included alternative to FastAPI&rsquo;s
-minimal-core-plus-libraries approach — worth knowing it exists, not worth a
-detour here.</p>
+<p class="admonition-title">The roads not taken: Django, Flask, Ninja</p>
+<p>Django is the batteries-included option: if you expect an admin panel and an ORM
+out of the box, that&rsquo;s the trade against FastAPI&rsquo;s minimal-core-plus-libraries
+approach. Flask is the older minimal one, close to FastAPI in spirit but without
+the type hints doing double duty as validation and OpenAPI docs. Django Ninja
+splits the difference, putting FastAPI-style typed routes on top of Django&rsquo;s ORM
+and admin. Worth knowing they exist, not worth a detour here.</p>
 </div>
 <hr />
 <h1 id="3-frontend-react-typescript">3. Frontend: React + TypeScript</h1>
-<p>This is JavaScript&rsquo;s whole job: fetch that list and render it.</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// src/types.ts</span>
-<span class="k">export</span><span class="w"> </span><span class="kd">interface</span><span class="w"> </span><span class="nx">Item</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
-<span class="w">  </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
-<span class="w">  </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
-<span class="w">  </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span>
-<span class="w">  </span><span class="nx">in_stock</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
-<span class="p">}</span>
+<p>We fetch that list and render it with JavaScript:</p>
+<div class="highlight"><pre><span></span><code><span class="c1">// the generated Item, with its doc comments trimmed</span>
+<span class="nx">Item</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">number</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">description?</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="kc">null</span><span class="p">;</span>
+<span class="w">    </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="kt">string</span><span class="p">[];</span>
+<span class="w">    </span><span class="nx">in_stock</span><span class="o">:</span><span class="w"> </span><span class="kt">boolean</span><span class="p">;</span>
+<span class="p">};</span>
 </code></pre></div>
 <div class="highlight"><pre><span></span><code><span class="c1">// src/ItemList.tsx</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">useEffect</span><span class="p">,</span><span class="w"> </span><span class="nx">useState</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"react"</span><span class="p">;</span>
@@ -941,58 +916,41 @@ detour here.</p>
 <span class="w">  </span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>Put <code>Item</code> from <code>types.ts</code> next to <code>Item</code> from <code>models.py</code> and the real
-difference isn&rsquo;t the syntax — it&rsquo;s what kind of typing each one is. Pydantic&rsquo;s
-<code>Item</code> is a class: two Python objects are only interchangeable if one is
-actually built as (or subclasses) that class. TypeScript&rsquo;s <code>Item</code> is an
-interface describing a <em>shape</em>: anything with the right fields satisfies it,
-whether or not it ever heard of the name <code>Item</code>. That&rsquo;s structural typing —
-TypeScript checks what an object has, not what it claims to be — and it&rsquo;s the
-default posture of the whole language, not a special case for interfaces.</p>
-<p>The sharper asymmetry, though, is what happens to each of these at runtime:
-nothing, on the TypeScript side. <code>npm run build</code> strips every type annotation
-on its way to plain JavaScript — by the time this code runs in a browser, <code>Item</code>
-doesn&rsquo;t exist anymore in any form the running program can check against. If the
-backend&rsquo;s <code>/items</code> response silently drifts from this shape, TypeScript will not
-notice, because TypeScript never sees production traffic; it only ever saw the
-code once, at build time. Pydantic, on the previous page, does the opposite: it
-keeps its type information around specifically so it can enforce it while the
-program is running. Same-looking type declaration, two completely different
-lifetimes.</p>
+<p>Put that <code>Item</code> next to <code>Item</code> from <code>models.py</code> and see that the syntax is very
+similar, but the kind of typing is much different. Pydantic&rsquo;s <code>Item</code> is a class:
+two Python objects are only interchangeable if one is actually built as (or
+subclasses) that class. TypeScript&rsquo;s <code>Item</code> is an interface describing a
+<em>shape</em>: anything with the right fields satisfies it, whether or not it ever
+heard of the name <code>Item</code>. That&rsquo;s structural typing: TypeScript checks what an
+object has, not what it claims to be. It works that way generally, not just for
+interfaces.</p>
+<p>The bigger difference is what happens at runtime: nothing, on the TypeScript
+side. <code>npm run build</code> strips every type annotation on its way to plain
+JavaScript. By the time this code runs in a browser, <code>Item</code> doesn&rsquo;t exist
+anymore in any form the running program can check against. If the backend&rsquo;s
+<code>/items</code> response silently drifts from this shape, TypeScript will not notice,
+because TypeScript never sees production traffic; it only ever saw the code
+once, at build time. Pydantic does the opposite: it keeps its type information
+around specifically so it can enforce it while the program is running.
+Same-looking type declaration, two completely different lifetimes.</p>
 <div class="admonition aside">
 <p class="admonition-title">The road not taken: Vue and Svelte</p>
 <p>Vue&rsquo;s single-file components or Svelte&rsquo;s compiler-driven approach would express
-this same list with noticeably less boilerplate than React&rsquo;s hooks — worth
-knowing they exist if <code>useEffect</code> ever starts to feel like the tax rather than
-the tool.</p>
+this same list with noticeably less boilerplate than React&rsquo;s hooks.</p>
 </div>
 <div class="admonition aside">
 <p class="admonition-title">The elephant: Next.js</p>
-<p>It&rsquo;s the more common starting point than plain Vite + React these days, so it
-deserves naming rather than a footnote. Next.js is React plus a framework&rsquo;s
-worth of opinions — file-based routing, and server components that fetch
-<code>/items</code> during render on the server instead of from <code>useEffect</code> in the
+<p>It&rsquo;s the more common starting point than plain Vite (build tool) + React these
+days, so it deserves naming rather than a footnote. Next.js is React plus a
+framework&rsquo;s worth of opinions: file-based routing, and server components that
+fetch <code>/items</code> during render on the server instead of from <code>useEffect</code> in the
 browser.</p>
-<p>That last part quietly erases the boundary this zine draws in the next
-section, because the &ldquo;client&rdquo; fetching the data is now Next&rsquo;s own server, not
-a stranger&rsquo;s browser. Which is exactly why it&rsquo;s out of scope here: this zine
-is about the seam between two separate processes, and Next.js&rsquo;s whole pitch is
-blurring that seam. Worth knowing what it&rsquo;s blurring before you reach for it.</p>
 </div>
 <hr />
-<h1 id="4-connecting-rest-vs-graphql">4. Connecting: REST vs GraphQL</h1>
-<p>Here&rsquo;s the one place in this build with a genuine either/or, so it&rsquo;s the one
-place a real &ldquo;vs&rdquo; section earns its keep.</p>
-<p>What&rsquo;s actually wired up, in <code>ItemList.tsx</code> above, is REST: a plain <code>GET
-/items</code> returning the full list, fetched with the browser&rsquo;s native <code>fetch</code>.
-For a single flat resource like this, that&rsquo;s the right, boring choice — but
-it&rsquo;s worth being honest about why, and where it stops being the right choice.</p>
-<p>First, though, the thing that actually breaks before any of that becomes
-relevant. Wire the two dev servers together exactly as written above and the
-request fails — not on the shape of the data, on permission to ask for it at
-all. <code>:5173</code> and <code>:8000</code> are different origins, so the browser refuses to hand
-the response to my JavaScript unless the server explicitly says that origin is
-allowed. The fix is four lines the backend section quietly skipped over:</p>
+<h1 id="4-connecting-where-the-types-stop">4. Connecting: where the types stop</h1>
+<p>First, the thing that breaks before anything else. <code>:5173</code> and <code>:8000</code> are
+different origins, so the browser will not hand the response to my JavaScript
+unless the server says that origin is allowed:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># app/main.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.middleware.cors</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORSMiddleware</span>
 
@@ -1002,56 +960,54 @@ allowed. The fix is four lines the backend section quietly skipped over:</p>
     <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">"GET"</span><span class="p">],</span>
 <span class="p">)</span>
 </code></pre></div>
-<p>That&rsquo;s worth more than a troubleshooting footnote, because it&rsquo;s this zine&rsquo;s
-whole thesis compressed into one error message. <code>curl localhost:8000/items</code>
-works and always did — curl has no origin, no other tabs, nobody to protect. The
-identical request from a browser is refused, because a browser is executing code
-from strangers next to my logged-in sessions, and same-origin policy is the rule
-that keeps one tab from reading another&rsquo;s data. Nothing about the data changed.
-The <em>caller</em> changed, and the caller&rsquo;s threat model came with it. Business in
-the back, party in the front: the party is the part where untrusted code runs on
-someone else&rsquo;s machine, and this is the bouncer.</p>
-<p>With that out of the way, the actual REST-versus-GraphQL tradeoffs.</p>
-<p><strong>Over/under-fetching.</strong> REST&rsquo;s <code>Item</code> response ships every field —
-<code>description</code>, <code>tags</code>, <code>in_stock</code> — whether the component uses all of them or
-just <code>name</code>. A view that only needs the name still pays for the rest of the
-payload. GraphQL flips this: the client sends a query naming exactly the fields
-it wants, and the server returns exactly that shape, no more. That matters more
-as payloads and screens multiply — for one list of three items, it&rsquo;s not a real
-cost yet.</p>
-<p><strong>Nested data and the N+1 problem.</strong> If each item eventually had a related
-resource — a claim history, a set of reviews — REST typically means either a
-second round trip per item (classic N+1: one request for the list, one more per
-item for its detail) or a bespoke, list-specific endpoint that pre-joins the
-data server-side. GraphQL lets the client ask for <code>items { name, reviews { rating } }</code>
-in a single request and have the server resolve the nesting. That&rsquo;s a genuine
-advantage — but it&rsquo;s not free: naive GraphQL resolvers can silently reintroduce
-the exact same N+1 problem one level down, and the standard fix (batching
-resolvers with something like DataLoader) is itself a piece of backend
-architecture you now own.</p>
-<p><strong>Caching.</strong> REST&rsquo;s biggest quiet advantage: <code>GET /items</code> is a stable URL, so
-the entire HTTP caching machinery — browser cache, <code>ETag</code>s, CDN edge caches —
-works on it for free. GraphQL usually POSTs a single query document to a single
-endpoint, which has no stable URL for that infrastructure to key on. Getting
-comparable caching back means adopting a GraphQL-aware client (Apollo Client,
-Relay) that builds its own normalized cache in memory, or adding persisted
-queries — real solutions, but they&rsquo;re solving a problem REST didn&rsquo;t have in the
-first place.</p>
-<p>None of this makes GraphQL wrong — it makes it a trade against a specific kind
-of complexity (nested, over-fetched, multi-consumer data) that this feature
-doesn&rsquo;t have yet. For one endpoint returning one flat list to one frontend,
-REST is the honest choice, not the naive one.</p>
+<p>We had an <code>Item</code> in <code>models.py</code> and an <code>Item</code> in <code>types.ts</code>, both typed by hand,
+with nothing anywhere checking that they still agree. Rename a field on the
+backend and the frontend compiles happily. It breaks later, in a browser, on
+someone else&rsquo;s machine. But FastAPI publishes that contract already. Every route
+feeds an OpenAPI document, generated from the same Pydantic model:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">"in_stock"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w"> </span><span class="nt">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"In Stock"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>So the hand-written version was a copy of a machine-readable file I already had.
+Now the backend dumps that file and the frontend generates from it:</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/dump_openapi.py<span class="w">    </span><span class="c1"># backend, writes openapi.json</span>
+npm<span class="w"> </span>run<span class="w"> </span>generate:types<span class="w">                   </span><span class="c1"># frontend, writes src/api-types.ts</span>
+</code></pre></div>
+<p><code>types.ts</code> is now three lines that re-export the generated <code>Item</code>, and CI fails
+if either file is stale. The two type systems are one type system with a
+direction: Python defines the shape, TypeScript derives it.</p>
+<p>Generating it immediately found a mistake I had made by hand. I wrote
+<code>description: string | null</code>, required. The schema says <code>description?:</code>,
+optional, because the field has a default. Small, but exactly the kind of thing
+that drifts unnoticed.</p>
+<p>I used <code>openapi-typescript</code> because I only wanted types and no runtime
+dependency. The FastAPI docs point at Hey API, which generates a whole client,
+and Orval goes further with React Query hooks, mocks, and Zod schemas.</p>
+<p>That closes the gap I started with. The two declarations cannot drift apart
+anymore, because only one of them is written by a person.</p>
 <div class="admonition aside">
-<p class="admonition-title">The road not taken: HTMX</p>
-<p>If neither side needs a client-rendered app at all — if the whole page could be
-server-rendered and just swap in the new list — HTMX is worth a mention: it
-gets you dynamic updates over plain HTTP without a JSON API or a frontend
-framework in the loop at all.</p>
+<p class="admonition-title">The roads not taken: GraphQL, tRPC, HTMX</p>
+<p>GraphQL makes the schema the contract by design, so clients generate types from
+it the same way. It is a bigger change than a build step, and worth it for
+different reasons: several clients wanting different shapes of one dataset, or
+data that is really a graph. Not for a longer list. Adoption peaked near 40%
+around 2021 and has settled closer to 25%, while REST still shows up in 70% of
+job listings.</p>
+<p>tRPC removes the boundary instead of describing it, but only works if both ends
+are TypeScript, which rules it out here.</p>
+<p>HTMX skips the JSON API entirely and swaps in server-rendered HTML, which makes
+the whole question disappear.</p>
+</div>
+<div class="admonition aside">
+<p class="admonition-title">One thing codegen still cannot do</p>
+<p>Generated types agree with the schema, but they are erased before the code runs,
+so nothing checks the response itself. If the server ever sends data that does
+not match its own schema, a fully typed client accepts it without complaint. Zod
+at the fetch boundary is the usual answer. Not the same problem as drift, and
+not something I needed here.</p>
 </div>
 <hr />
 <h1 id="5-testing-what-we-built">5. Testing what we built</h1>
-<p>With a real feature running end to end, both sides get an actual test instead
-of a toy one.</p>
+<p>With a real feature running end to end, both sides get a test:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># tests/test_items.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.testclient</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">app.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span>
@@ -1098,81 +1054,37 @@ of a toy one.</p>
 <span class="w">  </span><span class="nx">expect</span><span class="p">(</span><span class="nx">screen</span><span class="p">.</span><span class="nx">getByText</span><span class="p">(</span><span class="s2">"Multitool"</span><span class="p">)).</span><span class="nx">toBeInTheDocument</span><span class="p">();</span>
 <span class="p">});</span>
 </code></pre></div>
-<p>The runner on the JavaScript side is Vitest, which is worth a sentence of
-justification since Jest is still the name most people reach for. This is a
-Vite project, and Vitest reads the same <code>vite.config.ts</code> the dev server does —
-one toolchain, one set of transform rules. Reaching for Jest instead means
-installing a second transform pipeline (<code>ts-jest</code>, a JSDOM environment, its own
-config) whose job is to re-derive what Vite already knows. The API is
-Jest-compatible either way, so nothing below changes shape; what changes is how
-many build systems you own.</p>
-<p>Watching both get written back to back says more than any callout would. pytest
-leans on the bare <code>assert</code> statement — <code>assert response.status_code == 200</code> —
-and gets a readable failure message anyway, because pytest rewrites the
-assertion at import time to capture the values on both sides of the comparison.
-There&rsquo;s no special assertion API to learn. The JavaScript convention runs the
-other way: <code>expect(x).toBeInTheDocument()</code>, chained matchers, one method per
-kind of check. Part of why is structural — JS test runners don&rsquo;t have an
-equivalent of pytest&rsquo;s import-time assertion rewriting, so the ecosystem built
-expressiveness into chainable matcher objects instead of into the assert
-statement itself.</p>
-<p>The other thing that falls out of writing these side by side: mocking ships as
-a first-class part of the runner — <code>vi.fn()</code> is just there, no import beyond
-the runner itself (<code>jest.fn()</code> in Jest; same idea, same ergonomics). Python&rsquo;s
-equivalent, <code>unittest.mock</code> (or <code>pytest-mock</code> on top of it), is a separate, more
-deliberate affair — you reach for <code>Mock()</code> or <code>@patch</code> explicitly, and it feels
-more like a tool you pick up than a feature the framework hands you by default.
-Neither is better; it&rsquo;s just a different default about how much mocking
-machinery a test file starts with for free.</p>
+<p>We use Vitest over Jest here because it reads the same <code>vite.config.ts</code> the dev
+server already uses. Jest would mean a second setup (<code>ts-jest</code>, a JSDOM
+environment, its own config) doing work Vite is doing anyway. The API is nearly
+identical either way, so the tests above would look the same in both.</p>
+<p>Writing the two files back to back, two things stood out. pytest uses a plain
+<code>assert</code> and still prints a useful failure message. JavaScript goes the other
+way with chained matchers like <code>expect(x).toBeInTheDocument()</code>, a different
+method for each kind of check. Also mocking is built into the JavaScript runner.
+<code>vi.fn()</code> is just there. In Python you reach for <code>unittest.mock</code> and write
+<code>Mock()</code> or <code>@patch</code> on purpose.</p>
 <hr />
-<h1 id="6-what-actually-turned-out-to-differ">6. What actually turned out to differ</h1>
-<p>Stepping back from the build: the differences that held up were not the ones
-I&rsquo;d have guessed going in from syntax alone.</p>
-<p><strong>Typing.</strong> Python&rsquo;s type hints are optional and unenforced by the interpreter
-— they only became a runtime contract here because Pydantic chose to make them
-one, at the specific boundary of the API. TypeScript&rsquo;s types are the opposite
-shape: omnipresent at build time, then completely erased before the code ever
-runs. One system chooses when to turn types into an enforced guarantee at all;
-the other guarantees comprehensively and then guarantees nothing once the
-program is actually running. Neither is strictly stronger — they&rsquo;re solving for
-different moments in a program&rsquo;s life.</p>
-<p><strong>Packaging and trust.</strong> Both ecosystems converged on lockfiles and
-reproducible installs; that part isn&rsquo;t a real difference anymore. What&rsquo;s still
-different is where the risk sits: npm&rsquo;s install-time script execution puts
-trust pressure on every dependency, every time you install, because arbitrary
-code can run before your program does. Python&rsquo;s wheel format moves that
-pressure upstream, to whoever built the wheel, and mostly spares the install
-step itself. Different shape of the same underlying problem — you&rsquo;re trusting a
-supply chain either way.</p>
-<p><strong>Concurrency.</strong> This is the one that actually surprised me. Node&rsquo;s event loop
-is the only concurrency model it has ever had — every I/O call in the ecosystem
-grew up async, because there was never a blocking version sitting next to it to
-tempt anyone. Python&rsquo;s async support is bolted on by comparison: <code>async def</code>,
-an event loop, and a real, load-bearing seam running through the entire
-ecosystem between sync and async code, plus a GIL that keeps even
-multi-threaded Python from running Python bytecode on more than one core at a
-time. (That last part is finally in motion: free-threaded builds landed
-experimentally in 3.13 and became officially supported in 3.14, which is what
-this repo runs on. Not the default yet, and the ecosystem is still catching up,
-but &ldquo;Python has a GIL&rdquo; is now a statement about which build you installed
-rather than about the language.) FastAPI straddles that seam directly — it supports both <code>def</code> and <code>async
-def</code> route handlers, and the failure mode is real: drop blocking, synchronous
-work into an <code>async def</code> handler and it stalls the <em>entire</em> event loop for
-every other request the process is serving, not just the one that made the
-mistake. Node never gives you the footgun in the first place, because it never
-gave you the synchronous option to reach for. That&rsquo;s not a small stylistic
-difference — it&rsquo;s a different foundational assumption about what &ldquo;running a
-request handler&rdquo; means.</p>
-<p>Put together, the honest version of this zine&rsquo;s thesis is smaller than &ldquo;Python
-vs JavaScript&rdquo;: it&rsquo;s that a server process owning a database connection and a
-browser tab owned by a stranger were never going to converge on the same
-tradeoffs, no matter how similar <code>async</code> and <code>await</code> look sitting in each
-language&rsquo;s syntax. The mullet isn&rsquo;t a joke about mismatched hair — it&rsquo;s an
-accurate description of two environments doing genuinely different jobs, built
-by two communities that optimized for the constraints they actually had. I
-came in expecting to relearn syntax. I&rsquo;m leaving with a clearer sense of why
-the syntax ended up the way it did — which was the actual point.</p>
-<p>I&rsquo;ll be wrong about some of this in a year. That&rsquo;s fine — that&rsquo;s what the
-&ldquo;accurate as of&rdquo; on the cover is for.</p>
+<h1 id="6-conclusion">6. Conclusion</h1>
+<p><strong>Typing.</strong> Both sides have annotations that look almost identical and do
+different jobs. Python&rsquo;s do nothing on their own. Pydantic is what makes them
+real, and it checks at runtime, at the edge of the API. TypeScript&rsquo;s get checked
+everywhere while you build, then stripped out before anything runs. One checks
+late and narrowly, the other early and broadly.</p>
+<p>That is also why the schema only flows one way. Pydantic&rsquo;s types are real enough
+to describe, so FastAPI can publish them, and the frontend can generate from
+that. Python defines the shape, TypeScript derives it.</p>
+<p><strong>Concurrency.</strong> Node&rsquo;s event loop is the only model it has ever had, so every
+I/O call in the ecosystem grew up async. Python added async later, and the seam
+between sync and async code runs through the whole ecosystem. FastAPI sits right
+on it: routes can be <code>def</code> or <code>async def</code>, and putting blocking work in an
+<code>async def</code> handler stalls the event loop for every other request the process is
+serving, not just that one.</p>
+<p>The GIL is the other half of that story, keeping multi-threaded Python off more
+than one core at a time. Free-threaded builds landed experimentally in 3.13 and
+became officially supported in 3.14, which is what this repo runs on, so that
+may not stay true for long.</p>
+<p>If I keep one thing from building this, it&rsquo;s that the annotations are the easy
+part. What matters is what enforces them, and when.</p>
 </body>
 </html>

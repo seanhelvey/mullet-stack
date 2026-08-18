@@ -1,6 +1,6 @@
 # The Mullet Stack
 
-JavaScript in the front, Python in the back — a zine built by shipping one tiny
+JavaScript in the front, Python in the back. A zine built by shipping one tiny
 feature (fetching a list of items) across both, with a real FastAPI backend and
 a real React frontend behind every snippet in the text.
 
@@ -9,13 +9,13 @@ a real React frontend behind every snippet in the text.
 Three ways, all zero-setup:
 
 - **[📖 Read it online](https://seanhelvey.github.io/mullet-stack/zine/zine.html)**
-  — the designed version, no clone required. Want a PDF or a paper copy? Print
+  is the designed version, no clone required. Want a PDF or a paper copy? Print
   it (Ctrl/Cmd+P → Save as PDF); it has a print stylesheet, so it comes out
   looking like a zine rather than a screenshot of a webpage.
-- **From a clone** — open [`zine/zine.html`](zine/zine.html). It's committed to
+- **From a clone.** Open [`zine/zine.html`](zine/zine.html). It's committed to
   the repo, so it's there the moment you clone: one self-contained file, no
   build, no server, no dependencies.
-- **On GitHub** — [`zine/zine.md`](zine/zine.md) is the source and reads fine
+- **On GitHub.** [`zine/zine.md`](zine/zine.md) is the source and reads fine
   as plain Markdown. The only thing GitHub can't render is the `/// aside`
   sidebars, which show up as literal `///` markers; they're proper boxes in
   `zine.html`.
@@ -32,13 +32,19 @@ zine/
   check_snippets.py   fails if a snippet drifts from the file it names
   style.css           the riso-fanzine look: screen, dark, and paper
   fonts/              display face, subset and embedded (SIL OFL, license included)
-app/backend/          FastAPI + Pydantic — GET /items
-app/frontend/         React + TypeScript — fetches and renders it
+app/backend/          FastAPI + Pydantic, serving GET /items
+  openapi.json        the schema, dumped from the app
+  scripts/            dump_openapi.py writes that file
+app/frontend/         React + TypeScript, fetches and renders it
+  src/api-types.ts    generated from openapi.json, not hand-written
 ```
 
-CI runs both test suites, type-checks and builds the frontend, verifies every
-snippet in the zine still matches the source file it names, and fails if the
-committed `zine.html` is stale.
+The frontend's types are generated from the backend's schema rather than typed
+twice. Python defines the shape, TypeScript derives it.
+
+CI runs both test suites, type-checks and builds the frontend, and fails if any
+generated file is stale: `openapi.json`, `src/api-types.ts`, or `zine.html`. It
+also verifies every snippet in the zine still matches the source file it names.
 
 ## Running the app
 
@@ -51,7 +57,7 @@ uv run fastapi dev        # http://localhost:8000, docs at /docs
 uv run pytest -q
 ```
 
-**Frontend** (needs Node 20.19+ or 22.12+ — see `.nvmrc`; Vite 8 won't start on
+**Frontend** (needs Node 20.19+ or 22.12+, see `.nvmrc`; Vite 8 won't start on
 older ones):
 
 ```bash
@@ -65,6 +71,14 @@ npm run build              # type-checks, then builds
 Run both dev servers at once and the frontend at `:5173` will fetch its item
 list live from the backend at `:8000`.
 
+**After changing a model or a route**, regenerate the contract so the two ends
+stay in step. CI fails if you forget:
+
+```bash
+cd app/backend  && uv run python scripts/dump_openapi.py   # -> openapi.json
+cd app/frontend && npm run generate:types                  # -> src/api-types.ts
+```
+
 ## Rebuilding the zine
 
 Only needed if you edit `zine.md` or `style.css`. One command, no setup:
@@ -75,12 +89,12 @@ uv run --locked zine/build.py
 
 `build.py` declares its own dependencies inline ([PEP 723](https://peps.python.org/pep-0723/)),
 so `uv` fetches Markdown, PyMdown Extensions and Pygments into a throwaway
-environment on the fly — nothing to install, no virtualenv to activate, nothing
+environment on the fly. Nothing to install, no virtualenv to activate, nothing
 added to your system. The script inlines the stylesheet, the syntax-highlighting
 theme and the display font, so the output stays a single portable file you can
 email, host anywhere, or print.
 
-Writing an aside — the boxes taped into the margins — looks like this:
+Writing an aside, the boxes taped into the margins, looks like this:
 
 ```markdown
 /// aside | The road not taken: Django
@@ -91,7 +105,7 @@ Django would be the batteries-included alternative here.
 ## License
 
 Code is [MIT](LICENSE); the zine's text is CC BY 4.0. The embedded display font
-is Lato, under the SIL OFL — see [`zine/fonts/`](zine/fonts/).
+is Lato, under the SIL OFL, see [`zine/fonts/`](zine/fonts/).
 
 ## Why this repo exists
 
