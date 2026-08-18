@@ -281,6 +281,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   font-size: 0.92em;
+  margin: 1.8em 0;
 }
 
 th, td {
@@ -404,8 +405,15 @@ th {
 /* No `size` here on purpose: hardcoding A4 makes a Letter printer scale the
    whole page down to fit, which shrinks the type and inflates every margin.
    Leaving it out uses whatever paper the print dialog is set to. */
+/* No `size`: hardcoding A4 makes a Letter printer scale the page down, which
+   shrinks the type and inflates every margin.
+
+   Top and bottom margins have to live here, because @page applies to every
+   sheet. Body padding only pads the first page's top and the last page's
+   bottom, so relying on it puts every page in between hard against the paper
+   edge. The side margins are doubled up in body padding as insurance. */
 @page {
-  margin: 14mm 13mm;
+  margin: 15mm 8mm;
 }
 
 @media print {
@@ -418,9 +426,11 @@ th {
     --rule: #9a9382;
   }
 
+  /* Side margins only. Survives a print dialog set to "Margins: None", which
+     zeroes @page and would otherwise run the text off the edge. */
   body {
     max-width: none;
-    padding: 0;
+    padding: 0 7mm;
     font-size: 10.5pt;
   }
 
@@ -457,7 +467,12 @@ th {
   h1, h2, h3 { break-after: avoid; }
   h1:not(.title) { margin-top: 2.4em; }
   p, li { orphans: 3; widows: 3; }
-  .highlight, .admonition, blockquote, table { break-inside: avoid; }
+
+  /* Short things stay whole. Code listings are long enough that refusing to
+     break them leaves craters at the bottom of the page, so let them run over
+     and keep a few lines together on each side of the break instead. */
+  .admonition, blockquote, table { break-inside: avoid; }
+  .highlight { break-inside: auto; orphans: 4; widows: 4; }
 
   .admonition,
   .admonition + .admonition {
@@ -755,22 +770,28 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 <li><a href="#1-setting-up">1. Setting up</a></li>
 <li><a href="#2-backend-fastapi-pydantic">2. Backend: FastAPI + Pydantic</a></li>
 <li><a href="#3-frontend-react-typescript">3. Frontend: React + TypeScript</a></li>
-<li><a href="#4-connecting-where-the-types-stop">4. Connecting: where the types stop</a></li>
-<li><a href="#5-testing-what-we-built">5. Testing what we built</a></li>
+<li><a href="#4-testing-what-we-built">4. Testing what we built</a></li>
+<li><a href="#5-connecting-where-the-types-stop">5. Connecting: where the types stop</a></li>
 <li><a href="#6-conclusion">6. Conclusion</a></li>
 </ul>
 </div>
 
 </nav>
 <h1 id="why-this-exists">Why this exists</h1>
-<p>I&rsquo;m prepping for interviews. It&rsquo;s so easy to generate a FastAPI route or a React
-component in seconds these days, I wanted to create a field guide for myself to
-stay current on syntax, architecture, and ecosystem. It&rsquo;s laid out to print to
-give my eyes a break and make it fun to share.</p>
+<p>I wanted to create a field guide to stay current on modern full-stack web
+development with JavaScript and Python. While it is so easy to generate a ton of
+code these days, we still need to understand both low level syntax and higher
+level trade-offs between different libraries and frameworks.</p>
+<p>React and TypeScript have matured into something you can be productive in
+without fighting the tooling, and the browser is still where users actually are.
+Python has several great web frameworks and is widely used for AI. Hence the
+mullet: JavaScript in the front, Python in the back.</p>
 <p>We build one tiny real feature: a backend that returns a list of items, and a
-frontend that fetches and renders it. The example code is in this repo
-(<code>app/backend</code>, <code>app/frontend</code>). I&rsquo;m a beginner for life and feedback is
-welcome!</p>
+frontend that fetches and renders it. Both ends describe the same <code>Item</code>, both
+have a type system they&rsquo;re proud of, and neither one knows the other exists. How
+they end up agreeing is the real story.</p>
+<p>The example code is in this repo (<code>app/backend</code>, <code>app/frontend</code>). I&rsquo;m a beginner
+for life and feedback is welcome!</p>
 <hr />
 <h1 id="1-setting-up">1. Setting up</h1>
 <p>Before either side does anything interesting, get the smallest possible version
@@ -838,9 +859,9 @@ deeper another time to learn more.</p>
 reads the type hints on <code>Item</code> and the route signature and generates an
 interactive OpenAPI page from them at <code>localhost:8000/docs</code> without a separate
 schema file to keep in sync.</p>
-<p>Here&rsquo;s the part that took me a while to internalize: Python&rsquo;s type hints are not
-enforced by the interpreter. Write the same annotation on a plain class and
-nothing stops you at runtime:</p>
+<p>Which is worth pausing on, because those hints do nothing by themselves.
+Python&rsquo;s type hints are not enforced by the interpreter. Write the same
+annotation on a plain class and nothing stops you at runtime:</p>
 <div class="highlight"><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Plain</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
@@ -858,9 +879,9 @@ to reject. Send a malformed payload and you&rsquo;ll get a <code>200</code>, bec
 never asked for input. <code>response_model=list[Item]</code> guards the way <em>out</em>: it
 validates what the handler returns. The 422-on-bad-input story everyone tells
 about FastAPI is real, but it belongs to endpoints that declare a request body
-or typed query params. That&rsquo;s typical (pun intended) for Python&rsquo;s gradual-typing
-story: types are always optional, and how much they <em>do</em> depends entirely on
-what you bring in to enforce them.</p>
+or typed query params. That&rsquo;s typical (pun intended) for Python&rsquo;s
+gradual-typing: types are always optional, and how much they <em>do</em> depends
+entirely on what you bring in to enforce them.</p>
 <div class="admonition aside">
 <p class="admonition-title">The roads not taken: Django, Flask, Ninja</p>
 <p>Django is the batteries-included option: if you expect an admin panel and an ORM
@@ -947,67 +968,8 @@ fetch <code>/items</code> during render on the server instead of from <code>useE
 browser.</p>
 </div>
 <hr />
-<h1 id="4-connecting-where-the-types-stop">4. Connecting: where the types stop</h1>
-<p>First, the thing that breaks before anything else. <code>:5173</code> and <code>:8000</code> are
-different origins, so the browser will not hand the response to my JavaScript
-unless the server says that origin is allowed:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># app/main.py</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.middleware.cors</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORSMiddleware</span>
-
-<span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span>
-    <span class="n">CORSMiddleware</span><span class="p">,</span>
-    <span class="n">allow_origins</span><span class="o">=</span><span class="p">[</span><span class="s2">"http://localhost:5173"</span><span class="p">],</span>
-    <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">"GET"</span><span class="p">],</span>
-<span class="p">)</span>
-</code></pre></div>
-<p>We had an <code>Item</code> in <code>models.py</code> and an <code>Item</code> in <code>types.ts</code>, both typed by hand,
-with nothing anywhere checking that they still agree. Rename a field on the
-backend and the frontend compiles happily. It breaks later, in a browser, on
-someone else&rsquo;s machine. But FastAPI publishes that contract already. Every route
-feeds an OpenAPI document, generated from the same Pydantic model:</p>
-<div class="highlight"><pre><span></span><code><span class="nt">"in_stock"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w"> </span><span class="nt">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"In Stock"</span><span class="w"> </span><span class="p">}</span>
-</code></pre></div>
-<p>So the hand-written version was a copy of a machine-readable file I already had.
-Now the backend dumps that file and the frontend generates from it:</p>
-<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/dump_openapi.py<span class="w">    </span><span class="c1"># backend, writes openapi.json</span>
-npm<span class="w"> </span>run<span class="w"> </span>generate:types<span class="w">                   </span><span class="c1"># frontend, writes src/api-types.ts</span>
-</code></pre></div>
-<p><code>types.ts</code> is now three lines that re-export the generated <code>Item</code>, and CI fails
-if either file is stale. The two type systems are one type system with a
-direction: Python defines the shape, TypeScript derives it.</p>
-<p>Generating it immediately found a mistake I had made by hand. I wrote
-<code>description: string | null</code>, required. The schema says <code>description?:</code>,
-optional, because the field has a default. Small, but exactly the kind of thing
-that drifts unnoticed.</p>
-<p>I used <code>openapi-typescript</code> because I only wanted types and no runtime
-dependency. The FastAPI docs point at Hey API, which generates a whole client,
-and Orval goes further with React Query hooks, mocks, and Zod schemas.</p>
-<p>That closes the gap I started with. The two declarations cannot drift apart
-anymore, because only one of them is written by a person.</p>
-<div class="admonition aside">
-<p class="admonition-title">The roads not taken: GraphQL, tRPC, HTMX</p>
-<p>GraphQL makes the schema the contract by design, so clients generate types from
-it the same way. It is a bigger change than a build step, and worth it for
-different reasons: several clients wanting different shapes of one dataset, or
-data that is really a graph. Not for a longer list. Adoption peaked near 40%
-around 2021 and has settled closer to 25%, while REST still shows up in 70% of
-job listings.</p>
-<p>tRPC removes the boundary instead of describing it, but only works if both ends
-are TypeScript, which rules it out here.</p>
-<p>HTMX skips the JSON API entirely and swaps in server-rendered HTML, which makes
-the whole question disappear.</p>
-</div>
-<div class="admonition aside">
-<p class="admonition-title">One thing codegen still cannot do</p>
-<p>Generated types agree with the schema, but they are erased before the code runs,
-so nothing checks the response itself. If the server ever sends data that does
-not match its own schema, a fully typed client accepts it without complaint. Zod
-at the fetch boundary is the usual answer. Not the same problem as drift, and
-not something I needed here.</p>
-</div>
-<hr />
-<h1 id="5-testing-what-we-built">5. Testing what we built</h1>
-<p>With a real feature running end to end, both sides get a test:</p>
+<h1 id="4-testing-what-we-built">4. Testing what we built</h1>
+<p>Each side works on its own now, so both get a test before we wire them together:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># tests/test_items.py</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.testclient</span><span class="w"> </span><span class="kn">import</span> <span class="n">TestClient</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">app.main</span><span class="w"> </span><span class="kn">import</span> <span class="n">app</span>
@@ -1034,8 +996,9 @@ not something I needed here.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// tests/ItemList.test.tsx</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">render</span><span class="p">,</span><span class="w"> </span><span class="nx">screen</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"@testing-library/react"</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ItemList</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../src/ItemList"</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="kr">type</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">Item</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">"../src/types"</span><span class="p">;</span>
 
-<span class="kd">const</span><span class="w"> </span><span class="nx">items</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">items</span><span class="o">:</span><span class="w"> </span><span class="kt">Item</span><span class="p">[]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
 <span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">1</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Enamel mug"</span><span class="p">,</span><span class="w"> </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">null</span><span class="p">,</span><span class="w"> </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"kitchen"</span><span class="p">],</span><span class="w"> </span><span class="nx">in_stock</span><span class="o">:</span><span class="w"> </span><span class="kt">true</span><span class="w"> </span><span class="p">},</span>
 <span class="w">  </span><span class="p">{</span><span class="w"> </span><span class="nx">id</span><span class="o">:</span><span class="w"> </span><span class="kt">2</span><span class="p">,</span><span class="w"> </span><span class="nx">name</span><span class="o">:</span><span class="w"> </span><span class="s2">"Multitool"</span><span class="p">,</span><span class="w"> </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="kt">null</span><span class="p">,</span><span class="w"> </span><span class="nx">tags</span><span class="o">:</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="nx">in_stock</span><span class="o">:</span><span class="w"> </span><span class="kt">false</span><span class="w"> </span><span class="p">},</span>
 <span class="p">];</span>
@@ -1065,26 +1028,123 @@ method for each kind of check. Also mocking is built into the JavaScript runner.
 <code>vi.fn()</code> is just there. In Python you reach for <code>unittest.mock</code> and write
 <code>Mock()</code> or <code>@patch</code> on purpose.</p>
 <hr />
+<h1 id="5-connecting-where-the-types-stop">5. Connecting: where the types stop</h1>
+<p>First, the thing that breaks before anything else. <code>:5173</code> and <code>:8000</code> are
+different origins, so the browser will not hand the response to our JavaScript
+unless the server says that origin is allowed:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># app/main.py</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.middleware.cors</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORSMiddleware</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span>
+    <span class="n">CORSMiddleware</span><span class="p">,</span>
+    <span class="n">allow_origins</span><span class="o">=</span><span class="p">[</span><span class="s2">"http://localhost:5173"</span><span class="p">],</span>
+    <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">"GET"</span><span class="p">],</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>We had an <code>Item</code> in <code>models.py</code> and an <code>Item</code> in <code>types.ts</code>, both typed by hand,
+with nothing anywhere checking that they still agree. Rename a field on the
+backend and the frontend compiles happily. It breaks later, in a browser, on
+someone else&rsquo;s machine. But FastAPI publishes that contract already. Every route
+feeds an OpenAPI document, generated from the same Pydantic model:</p>
+<div class="highlight"><pre><span></span><code><span class="nt">"in_stock"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"boolean"</span><span class="p">,</span><span class="w"> </span><span class="nt">"default"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"In Stock"</span><span class="w"> </span><span class="p">}</span>
+</code></pre></div>
+<p>So the hand-written version was a copy of a machine-readable file we already
+had. Now the backend dumps that file and the frontend generates from it:</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>scripts/dump_openapi.py<span class="w">    </span><span class="c1"># backend, writes openapi.json</span>
+npm<span class="w"> </span>run<span class="w"> </span>generate:types<span class="w">                   </span><span class="c1"># frontend, writes src/api-types.ts</span>
+</code></pre></div>
+<p><code>types.ts</code> is now three lines that re-export the generated <code>Item</code>, and CI fails
+if either file is stale. The two type systems are one type system with a
+direction: Python defines the shape, TypeScript derives it.</p>
+<p>Generating it immediately found a mistake we had made by hand: we wrote
+<code>description: string | null</code>, required. The schema says <code>description?:</code>,
+optional, because the field has a default. Small, but exactly the kind of thing
+that drifts unnoticed.</p>
+<p>There are a few tools for this, and they differ mostly in how much they hand
+you. Weekly downloads and versions as of August 2026:</p>
+<table>
+<thead>
+<tr>
+<th>tool</th>
+<th>downloads</th>
+<th>version</th>
+<th>what you get</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>openapi-typescript</code></td>
+<td>5.4M</td>
+<td>7.13.0</td>
+<td>types only</td>
+</tr>
+<tr>
+<td><code>@hey-api/openapi-ts</code></td>
+<td>3.6M</td>
+<td>0.99.0</td>
+<td>types and a generated client</td>
+</tr>
+<tr>
+<td><code>orval</code></td>
+<td>1.6M</td>
+<td>8.24.0</td>
+<td>client, React Query, mocks, Zod</td>
+</tr>
+</tbody>
+</table>
+<p>FastAPI&rsquo;s own docs point at Hey API, which is worth knowing even though it is
+still pre-1.0. We went with <code>openapi-typescript</code> because the fetch call above
+was already written and only the types were missing, and it happens to be both
+the most downloaded and the one with a settled major version. If the frontend
+were bigger, generating the client too would probably win.</p>
+<p>That closes the gap I started with. The two declarations cannot drift apart
+anymore, because only one of them is written by a person.</p>
+<div class="admonition aside">
+<p class="admonition-title">The roads not taken: GraphQL, tRPC, HTMX</p>
+<p>GraphQL makes the schema the contract by design, so clients generate types from
+it the same way. It is a bigger change than a build step, and worth it for
+different reasons: several clients wanting different shapes of one dataset, or
+data that is really a graph. Not for a longer list. Adoption peaked near 40%
+around 2021 and has settled closer to 25%, while REST still shows up in 70% of
+job listings.</p>
+<p>tRPC removes the boundary instead of describing it, but only works if both ends
+are TypeScript, which rules it out here.</p>
+<p>HTMX skips the JSON API entirely and swaps in server-rendered HTML, which makes
+the whole question disappear.</p>
+</div>
+<div class="admonition aside">
+<p class="admonition-title">One thing codegen still cannot do</p>
+<p>Generated types agree with the schema, but they are erased before the code runs,
+so nothing checks the response itself. If the server ever sends data that does
+not match its own schema, a fully typed client accepts it without complaint. Zod
+at the fetch boundary is the usual answer. Not the same problem as drift, and
+not something I needed here.</p>
+</div>
+<hr />
 <h1 id="6-conclusion">6. Conclusion</h1>
-<p><strong>Typing.</strong> Both sides have annotations that look almost identical and do
-different jobs. Python&rsquo;s do nothing on their own. Pydantic is what makes them
-real, and it checks at runtime, at the edge of the API. TypeScript&rsquo;s get checked
-everywhere while you build, then stripped out before anything runs. One checks
-late and narrowly, the other early and broadly.</p>
-<p>That is also why the schema only flows one way. Pydantic&rsquo;s types are real enough
-to describe, so FastAPI can publish them, and the frontend can generate from
-that. Python defines the shape, TypeScript derives it.</p>
-<p><strong>Concurrency.</strong> Node&rsquo;s event loop is the only model it has ever had, so every
-I/O call in the ecosystem grew up async. Python added async later, and the seam
-between sync and async code runs through the whole ecosystem. FastAPI sits right
-on it: routes can be <code>def</code> or <code>async def</code>, and putting blocking work in an
-<code>async def</code> handler stalls the event loop for every other request the process is
-serving, not just that one.</p>
+<p>Both sides have annotations that look almost identical and do different jobs.
+Python&rsquo;s do nothing on their own. Pydantic is what makes them real, and it
+checks at runtime, at the edge of the API. TypeScript&rsquo;s get checked everywhere
+while you build, then stripped out before anything runs.</p>
+<p>That difference is what lets the two ends agree. Pydantic&rsquo;s types are real
+enough to describe, so FastAPI publishes a schema from the back, and the front
+derives its types from it and checks them at build time. Python defines the
+shape, TypeScript derives it.</p>
+<p>If I keep one thing from building this, it&rsquo;s that the annotations are the easy
+part. What matters is what enforces them, and when.</p>
+<div class="admonition aside">
+<p class="admonition-title">Off to one side: concurrency</p>
+<p>Not part of the thread above, but the difference I found most surprising. Node&rsquo;s
+event loop is the only model it has ever had, so every I/O call in the ecosystem
+grew up async. Python added async later, and the seam between sync and async
+code runs through the whole ecosystem. FastAPI sits right on it: routes can be
+<code>def</code> or <code>async def</code>, and putting blocking work in an <code>async def</code> handler stalls
+the event loop for every other request the process is serving, not just that
+one.</p>
 <p>The GIL is the other half of that story, keeping multi-threaded Python off more
 than one core at a time. Free-threaded builds landed experimentally in 3.13 and
 became officially supported in 3.14, which is what this repo runs on, so that
 may not stay true for long.</p>
-<p>If I keep one thing from building this, it&rsquo;s that the annotations are the easy
-part. What matters is what enforces them, and when.</p>
+</div>
 </body>
 </html>

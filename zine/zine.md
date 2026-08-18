@@ -7,15 +7,23 @@ date: "Accurate as of August 2026. Dependencies will have drifted by the time yo
 
 # Why this exists
 
-I'm prepping for interviews. It's so easy to generate a FastAPI route or a React
-component in seconds these days, I wanted to create a field guide for myself to
-stay current on syntax, architecture, and ecosystem. It's laid out to print to
-give my eyes a break and make it fun to share.
+I wanted to create a field guide to stay current on modern full-stack web
+development with JavaScript and Python. While it is so easy to generate a ton of
+code these days, we still need to understand both low level syntax and higher
+level trade-offs between different libraries and frameworks.
+
+React and TypeScript have matured into something you can be productive in
+without fighting the tooling, and the browser is still where users actually are.
+Python has several great web frameworks and is widely used for AI. Hence the
+mullet: JavaScript in the front, Python in the back.
 
 We build one tiny real feature: a backend that returns a list of items, and a
-frontend that fetches and renders it. The example code is in this repo
-(`app/backend`, `app/frontend`). I'm a beginner for life and feedback is
-welcome!
+frontend that fetches and renders it. Both ends describe the same `Item`, both
+have a type system they're proud of, and neither one knows the other exists. How
+they end up agreeing is the real story.
+
+The example code is in this repo (`app/backend`, `app/frontend`). I'm a beginner
+for life and feedback is welcome!
 
 ---
 
@@ -107,9 +115,9 @@ reads the type hints on `Item` and the route signature and generates an
 interactive OpenAPI page from them at `localhost:8000/docs` without a separate
 schema file to keep in sync.
 
-Here's the part that took me a while to internalize: Python's type hints are not
-enforced by the interpreter. Write the same annotation on a plain class and
-nothing stops you at runtime:
+Which is worth pausing on, because those hints do nothing by themselves.
+Python's type hints are not enforced by the interpreter. Write the same
+annotation on a plain class and nothing stops you at runtime:
 
 ```python
 class Plain:
@@ -131,9 +139,9 @@ to reject. Send a malformed payload and you'll get a `200`, because the handler
 never asked for input. `response_model=list[Item]` guards the way *out*: it
 validates what the handler returns. The 422-on-bad-input story everyone tells
 about FastAPI is real, but it belongs to endpoints that declare a request body
-or typed query params. That's typical (pun intended) for Python's gradual-typing
-story: types are always optional, and how much they *do* depends entirely on
-what you bring in to enforce them.
+or typed query params. That's typical (pun intended) for Python's
+gradual-typing: types are always optional, and how much they *do* depends
+entirely on what you bring in to enforce them.
 
 /// aside | The roads not taken: Django, Flask, Ninja
 Django is the batteries-included option: if you expect an admin panel and an ORM
@@ -231,86 +239,9 @@ browser.
 
 ---
 
-# 4. Connecting: where the types stop
+# 4. Testing what we built
 
-First, the thing that breaks before anything else. `:5173` and `:8000` are
-different origins, so the browser will not hand the response to my JavaScript
-unless the server says that origin is allowed:
-
-```python
-# app/main.py
-from fastapi.middleware.cors import CORSMiddleware
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_methods=["GET"],
-)
-```
-
-We had an `Item` in `models.py` and an `Item` in `types.ts`, both typed by hand,
-with nothing anywhere checking that they still agree. Rename a field on the
-backend and the frontend compiles happily. It breaks later, in a browser, on
-someone else's machine. But FastAPI publishes that contract already. Every route
-feeds an OpenAPI document, generated from the same Pydantic model:
-
-```json
-"in_stock": { "type": "boolean", "default": true, "title": "In Stock" }
-```
-
-So the hand-written version was a copy of a machine-readable file I already had.
-Now the backend dumps that file and the frontend generates from it:
-
-```bash
-uv run python scripts/dump_openapi.py    # backend, writes openapi.json
-npm run generate:types                   # frontend, writes src/api-types.ts
-```
-
-`types.ts` is now three lines that re-export the generated `Item`, and CI fails
-if either file is stale. The two type systems are one type system with a
-direction: Python defines the shape, TypeScript derives it.
-
-Generating it immediately found a mistake I had made by hand. I wrote
-`description: string | null`, required. The schema says `description?:`,
-optional, because the field has a default. Small, but exactly the kind of thing
-that drifts unnoticed.
-
-I used `openapi-typescript` because I only wanted types and no runtime
-dependency. The FastAPI docs point at Hey API, which generates a whole client,
-and Orval goes further with React Query hooks, mocks, and Zod schemas.
-
-That closes the gap I started with. The two declarations cannot drift apart
-anymore, because only one of them is written by a person.
-
-/// aside | The roads not taken: GraphQL, tRPC, HTMX
-GraphQL makes the schema the contract by design, so clients generate types from
-it the same way. It is a bigger change than a build step, and worth it for
-different reasons: several clients wanting different shapes of one dataset, or
-data that is really a graph. Not for a longer list. Adoption peaked near 40%
-around 2021 and has settled closer to 25%, while REST still shows up in 70% of
-job listings.
-
-tRPC removes the boundary instead of describing it, but only works if both ends
-are TypeScript, which rules it out here.
-
-HTMX skips the JSON API entirely and swaps in server-rendered HTML, which makes
-the whole question disappear.
-///
-
-/// aside | One thing codegen still cannot do
-Generated types agree with the schema, but they are erased before the code runs,
-so nothing checks the response itself. If the server ever sends data that does
-not match its own schema, a fully typed client accepts it without complaint. Zod
-at the fetch boundary is the usual answer. Not the same problem as drift, and
-not something I needed here.
-///
-
-
----
-
-# 5. Testing what we built
-
-With a real feature running end to end, both sides get a test:
+Each side works on its own now, so both get a test before we wire them together:
 
 ```python
 # tests/test_items.py
@@ -341,8 +272,9 @@ def test_list_items_matches_the_item_shape():
 // tests/ItemList.test.tsx
 import { render, screen } from "@testing-library/react";
 import { ItemList } from "../src/ItemList";
+import type { Item } from "../src/types";
 
-const items = [
+const items: Item[] = [
   { id: 1, name: "Enamel mug", description: null, tags: ["kitchen"], in_stock: true },
   { id: 2, name: "Multitool", description: null, tags: [], in_stock: false },
 ];
@@ -376,29 +308,119 @@ method for each kind of check. Also mocking is built into the JavaScript runner.
 
 ---
 
+# 5. Connecting: where the types stop
+
+First, the thing that breaks before anything else. `:5173` and `:8000` are
+different origins, so the browser will not hand the response to our JavaScript
+unless the server says that origin is allowed:
+
+```python
+# app/main.py
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_methods=["GET"],
+)
+```
+
+We had an `Item` in `models.py` and an `Item` in `types.ts`, both typed by hand,
+with nothing anywhere checking that they still agree. Rename a field on the
+backend and the frontend compiles happily. It breaks later, in a browser, on
+someone else's machine. But FastAPI publishes that contract already. Every route
+feeds an OpenAPI document, generated from the same Pydantic model:
+
+```json
+"in_stock": { "type": "boolean", "default": true, "title": "In Stock" }
+```
+
+So the hand-written version was a copy of a machine-readable file we already
+had. Now the backend dumps that file and the frontend generates from it:
+
+```bash
+uv run python scripts/dump_openapi.py    # backend, writes openapi.json
+npm run generate:types                   # frontend, writes src/api-types.ts
+```
+
+`types.ts` is now three lines that re-export the generated `Item`, and CI fails
+if either file is stale. The two type systems are one type system with a
+direction: Python defines the shape, TypeScript derives it.
+
+Generating it immediately found a mistake we had made by hand: we wrote
+`description: string | null`, required. The schema says `description?:`,
+optional, because the field has a default. Small, but exactly the kind of thing
+that drifts unnoticed.
+
+There are a few tools for this, and they differ mostly in how much they hand
+you. Weekly downloads and versions as of August 2026:
+
+| tool                 | downloads | version | what you get                    |
+| -------------------- | --------- | ------- | ------------------------------- |
+| `openapi-typescript` | 5.4M      | 7.13.0  | types only                      |
+| `@hey-api/openapi-ts`| 3.6M      | 0.99.0  | types and a generated client    |
+| `orval`              | 1.6M      | 8.24.0  | client, React Query, mocks, Zod |
+
+FastAPI's own docs point at Hey API, which is worth knowing even though it is
+still pre-1.0. We went with `openapi-typescript` because the fetch call above
+was already written and only the types were missing, and it happens to be both
+the most downloaded and the one with a settled major version. If the frontend
+were bigger, generating the client too would probably win.
+
+That closes the gap I started with. The two declarations cannot drift apart
+anymore, because only one of them is written by a person.
+
+/// aside | The roads not taken: GraphQL, tRPC, HTMX
+GraphQL makes the schema the contract by design, so clients generate types from
+it the same way. It is a bigger change than a build step, and worth it for
+different reasons: several clients wanting different shapes of one dataset, or
+data that is really a graph. Not for a longer list. Adoption peaked near 40%
+around 2021 and has settled closer to 25%, while REST still shows up in 70% of
+job listings.
+
+tRPC removes the boundary instead of describing it, but only works if both ends
+are TypeScript, which rules it out here.
+
+HTMX skips the JSON API entirely and swaps in server-rendered HTML, which makes
+the whole question disappear.
+///
+
+/// aside | One thing codegen still cannot do
+Generated types agree with the schema, but they are erased before the code runs,
+so nothing checks the response itself. If the server ever sends data that does
+not match its own schema, a fully typed client accepts it without complaint. Zod
+at the fetch boundary is the usual answer. Not the same problem as drift, and
+not something I needed here.
+///
+
+---
+
 # 6. Conclusion
 
-**Typing.** Both sides have annotations that look almost identical and do
-different jobs. Python's do nothing on their own. Pydantic is what makes them
-real, and it checks at runtime, at the edge of the API. TypeScript's get checked
-everywhere while you build, then stripped out before anything runs. One checks
-late and narrowly, the other early and broadly.
+Both sides have annotations that look almost identical and do different jobs.
+Python's do nothing on their own. Pydantic is what makes them real, and it
+checks at runtime, at the edge of the API. TypeScript's get checked everywhere
+while you build, then stripped out before anything runs.
 
-That is also why the schema only flows one way. Pydantic's types are real enough
-to describe, so FastAPI can publish them, and the frontend can generate from
-that. Python defines the shape, TypeScript derives it.
+That difference is what lets the two ends agree. Pydantic's types are real
+enough to describe, so FastAPI publishes a schema from the back, and the front
+derives its types from it and checks them at build time. Python defines the
+shape, TypeScript derives it.
 
-**Concurrency.** Node's event loop is the only model it has ever had, so every
-I/O call in the ecosystem grew up async. Python added async later, and the seam
-between sync and async code runs through the whole ecosystem. FastAPI sits right
-on it: routes can be `def` or `async def`, and putting blocking work in an
-`async def` handler stalls the event loop for every other request the process is
-serving, not just that one.
+If I keep one thing from building this, it's that the annotations are the easy
+part. What matters is what enforces them, and when.
+
+/// aside | Off to one side: concurrency
+Not part of the thread above, but the difference I found most surprising. Node's
+event loop is the only model it has ever had, so every I/O call in the ecosystem
+grew up async. Python added async later, and the seam between sync and async
+code runs through the whole ecosystem. FastAPI sits right on it: routes can be
+`def` or `async def`, and putting blocking work in an `async def` handler stalls
+the event loop for every other request the process is serving, not just that
+one.
 
 The GIL is the other half of that story, keeping multi-threaded Python off more
 than one core at a time. Free-threaded builds landed experimentally in 3.13 and
 became officially supported in 3.14, which is what this repo runs on, so that
 may not stay true for long.
-
-If I keep one thing from building this, it's that the annotations are the easy
-part. What matters is what enforces them, and when.
+///

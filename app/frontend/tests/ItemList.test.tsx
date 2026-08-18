@@ -1,7 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import { ItemList } from "../src/ItemList";
+import type { Item } from "../src/types";
 
-const items = [
+// Typed against the generated Item so the fixture cannot drift from the
+// backend's schema without tsc noticing.
+const items: Item[] = [
   { id: 1, name: "Enamel mug", description: null, tags: ["kitchen"], in_stock: true },
   { id: 2, name: "Multitool", description: null, tags: [], in_stock: false },
 ];

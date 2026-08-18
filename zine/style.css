@@ -267,6 +267,7 @@ table {
   border-collapse: collapse;
   width: 100%;
   font-size: 0.92em;
+  margin: 1.8em 0;
 }
 
 th, td {
@@ -390,8 +391,15 @@ th {
 /* No `size` here on purpose: hardcoding A4 makes a Letter printer scale the
    whole page down to fit, which shrinks the type and inflates every margin.
    Leaving it out uses whatever paper the print dialog is set to. */
+/* No `size`: hardcoding A4 makes a Letter printer scale the page down, which
+   shrinks the type and inflates every margin.
+
+   Top and bottom margins have to live here, because @page applies to every
+   sheet. Body padding only pads the first page's top and the last page's
+   bottom, so relying on it puts every page in between hard against the paper
+   edge. The side margins are doubled up in body padding as insurance. */
 @page {
-  margin: 14mm 13mm;
+  margin: 15mm 8mm;
 }
 
 @media print {
@@ -404,9 +412,11 @@ th {
     --rule: #9a9382;
   }
 
+  /* Side margins only. Survives a print dialog set to "Margins: None", which
+     zeroes @page and would otherwise run the text off the edge. */
   body {
     max-width: none;
-    padding: 0;
+    padding: 0 7mm;
     font-size: 10.5pt;
   }
 
@@ -443,7 +453,12 @@ th {
   h1, h2, h3 { break-after: avoid; }
   h1:not(.title) { margin-top: 2.4em; }
   p, li { orphans: 3; widows: 3; }
-  .highlight, .admonition, blockquote, table { break-inside: avoid; }
+
+  /* Short things stay whole. Code listings are long enough that refusing to
+     break them leaves craters at the bottom of the page, so let them run over
+     and keep a few lines together on each side of the break instead. */
+  .admonition, blockquote, table { break-inside: avoid; }
+  .highlight { break-inside: auto; orphans: 4; widows: 4; }
 
   .admonition,
   .admonition + .admonition {
