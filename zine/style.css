@@ -495,11 +495,19 @@ th {
   /* Short things stay whole. Code listings are long enough that refusing to
      break them leaves craters at the bottom of the page, so let them run over
      and keep a few lines together on each side of the break instead. */
-  .admonition, blockquote, table, .diagram { break-inside: avoid; }
+  blockquote, table, .diagram { break-inside: avoid; }
 
-  /* Line art already, so it costs almost nothing to print. */
+  /* Long asides strand most of a page when they refuse to split, and a box
+     continuing over a page break reads fine. */
+  .admonition { break-inside: auto; }
+  .admonition p { orphans: 3; widows: 3; }
+
+  /* Sized by printed HEIGHT, not screen width. An unbreakable block taller
+     than about a third of the column will strand the rest of the page when
+     it does not fit, so the tall one is capped well below that. */
   .diagram { margin: 1.6em 0; }
-  .diagram svg { max-width: 36em; }
+  .diagram svg { max-width: 24em; }        /* chain: ~3.5in tall */
+  .diagram--wide svg { max-width: 38em; }  /* timeline: only ~2in tall */
   .highlight { break-inside: auto; orphans: 4; widows: 4; }
 
   .admonition,
