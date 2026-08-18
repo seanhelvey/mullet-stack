@@ -757,19 +757,20 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 
 </nav>
 <h1 id="why-this-exists">Why this exists</h1>
-<p>I wanted to create a field guide to stay current on modern full-stack web
-development with JavaScript and Python. It is so easy to generate a ton of code
-these days, but we still need to understand both low level syntax and higher
-level trade-offs between different libraries and frameworks.</p>
+<p>It is so easy to generate a ton of code these days, but we still need to
+understand both low level syntax and higher level trade-offs between different
+libraries and frameworks. I wanted to create a field guide to stay current on
+modern full-stack web development with JavaScript and Python. Hence the mullet:
+JavaScript in the front, Python in the back.</p>
 <p>This project is not intended to be authoritative. I chose what seems like the
 best combination of tools right now and tried to describe other options along
 the way. My current full-time job is maintaining a Django app with a jQuery
 front-end, so this is just me exploring and learning in public.</p>
 <p>React and TypeScript have matured a lot in the last couple of years. Python&rsquo;s
-web frameworks have evolved too, while it is also widely used for AI. Hence the
-mullet: JavaScript in the front, Python in the back. Both ends describe the same
-<code>Item</code> differently. What is the best way to bring these two languages together
-into one stack?</p>
+web frameworks have evolved too, and we will focus on FastAPI with Pydantic for
+this project. Each of their type systems implements the same <code>Item</code> in a
+slightly different way. What is the best way to bring these two technologies
+together into one stack?</p>
 <p>The snippets ahead are windows into the repo rather than a build-along, so the
 fastest way to follow is to clone it, start both servers, and poke at the files
 as you read. It is a backend that returns a list of items, and a frontend that
@@ -1166,7 +1167,7 @@ job listings.</p>
 <p>tRPC removes the boundary instead of describing it, but only works if both ends
 are TypeScript, which rules it out here.</p>
 <p>HTMX skips the JSON API entirely and transfers HTML fragments over the wire
-instead of JSON, which is out of scope for this post.</p>
+instead of JSON, which is out of scope here.</p>
 </div>
 <div class="admonition aside">
 <p class="admonition-title">One thing codegen still cannot do</p>

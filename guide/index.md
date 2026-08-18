@@ -7,10 +7,11 @@ date: "Accurate as of August 2026. Dependencies will have drifted by the time yo
 
 # Why this exists
 
-I wanted to create a field guide to stay current on modern full-stack web
-development with JavaScript and Python. It is so easy to generate a ton of code
-these days, but we still need to understand both low level syntax and higher
-level trade-offs between different libraries and frameworks.
+It is so easy to generate a ton of code these days, but we still need to
+understand both low level syntax and higher level trade-offs between different
+libraries and frameworks. I wanted to create a field guide to stay current on
+modern full-stack web development with JavaScript and Python. Hence the mullet:
+JavaScript in the front, Python in the back.
 
 This project is not intended to be authoritative. I chose what seems like the
 best combination of tools right now and tried to describe other options along
@@ -18,10 +19,10 @@ the way. My current full-time job is maintaining a Django app with a jQuery
 front-end, so this is just me exploring and learning in public.
 
 React and TypeScript have matured a lot in the last couple of years. Python's
-web frameworks have evolved too, while it is also widely used for AI. Hence the
-mullet: JavaScript in the front, Python in the back. Both ends describe the same
-`Item` differently. What is the best way to bring these two languages together
-into one stack?
+web frameworks have evolved too, and we will focus on FastAPI with Pydantic for
+this project. Each of their type systems implements the same `Item` in a
+slightly different way. What is the best way to bring these two technologies
+together into one stack?
 
 The snippets ahead are windows into the repo rather than a build-along, so the
 fastest way to follow is to clone it, start both servers, and poke at the files
@@ -461,7 +462,7 @@ tRPC removes the boundary instead of describing it, but only works if both ends
 are TypeScript, which rules it out here.
 
 HTMX skips the JSON API entirely and transfers HTML fragments over the wire
-instead of JSON, which is out of scope for this post.
+instead of JSON, which is out of scope here.
 ///
 
 /// aside | One thing codegen still cannot do
