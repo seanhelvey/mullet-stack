@@ -1,6 +1,6 @@
 ---
 title: "The Mullet Stack"
-subtitle: "A working refresher on modern Python and modern JavaScript"
+subtitle: "JavaScript in the front, Python in the back."
 author: "Sean Helvey"
 date: "Accurate as of August 2026. Dependencies will have drifted by the time you read this"
 ---
@@ -13,9 +13,9 @@ stay current on syntax, architecture, and ecosystem. It's laid out to print to
 give my eyes a break and make it fun to share.
 
 We build one tiny real feature: a backend that returns a list of items, and a
-frontend that fetches and renders it. Hence the mullet: JavaScript in the front,
-Python in the back. The example code is in this repo (`app/backend`,
-`app/frontend`). I'm a beginner for life and feedback is welcome!
+frontend that fetches and renders it. The example code is in this repo
+(`app/backend`, `app/frontend`). I'm a beginner for life and feedback is
+welcome!
 
 ---
 
