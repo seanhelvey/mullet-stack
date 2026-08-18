@@ -15,9 +15,7 @@ level trade-offs between different libraries and frameworks.
 This project is not intended to be authoritative. I chose what seems like the
 best combination of tools right now and tried to describe other options along
 the way. My current full-time job is maintaining a Django app with a jQuery
-front-end, so this is just me exploring and learning in public. I tried to
-format this as a "zine." There are diagrams and a print stylesheet, but let's be
-honest: it is a fancy blog post :)
+front-end, so this is just me exploring and learning in public.
 
 React and TypeScript have matured a lot in the last couple of years. Python's
 web frameworks have evolved too, while it is also widely used for AI. Hence the
@@ -157,6 +155,19 @@ I/O (its `async def` views still run through a thread pool) and without type
 hints doing double duty as validation and OpenAPI docs. Django Ninja splits the
 difference, putting FastAPI-style async and typed routes on top of Django's ORM
 and admin. Worth knowing they exist, not worth a detour here.
+///
+
+/// aside | A tangent: async on both sides
+Every I/O call in Node's event loop is async out of the box. Python added async
+later, and the seam between sync and async code runs through the whole
+ecosystem. FastAPI sits right on it: routes can be `def` or `async def`, and
+putting blocking work in an `async def` handler stalls the event loop for every
+other request the process is serving, not just that one.
+
+The GIL is the other half of that story, keeping multi-threaded Python off more
+than one core at a time. Free-threaded builds landed experimentally in 3.13 and
+became officially supported in 3.14, which is what this repo runs on, so that
+may not stay true for long.
 ///
 
 ---
@@ -361,10 +372,10 @@ app.add_middleware(
 )
 ```
 
-Now the `Item` question. There is one in `models.py` and one in `types.ts`,
-describing the same thing. Keep two copies by hand and nothing anywhere checks
-they still agree: rename a field on the backend and the frontend compiles
-happily, then breaks later, in a browser, on someone else's machine.
+Now back to the `Item` question. There is one in `models.py` and one in
+`types.ts`, describing the same thing. Keep two copies by hand and nothing
+anywhere checks they still agree: rename a field on the backend and the frontend
+compiles happily, then breaks later, in a browser, on someone else's machine.
 
 But FastAPI publishes that contract already. Every route feeds an OpenAPI
 document, generated from the same Pydantic model:
@@ -382,7 +393,7 @@ npm run generate:types                   # frontend, writes src/api-types.ts
 ```
 
 <figure class="diagram">
-<svg viewBox="0 0 400 396" role="img" aria-label="The Item shape starts in the Pydantic model, is dumped to an OpenAPI schema, generated into TypeScript types, and consumed by the React component. Only the first and last files are written by hand.">
+<svg viewBox="0 0 400 344" role="img" aria-label="The Item shape starts in the Pydantic model, is dumped to an OpenAPI schema, generated into TypeScript types, and consumed by the React component. Only the first and last files are written by hand.">
 <defs>
 <marker id="tip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
 <polygon points="0,0 10,5 0,10" fill="currentColor"/>
@@ -391,23 +402,23 @@ npm run generate:types                   # frontend, writes src/api-types.ts
 <rect x="20" y="8" width="210" height="54" fill="none" stroke="currentColor" stroke-width="2"/>
 <text x="125" y="31" text-anchor="middle" font-size="13">app/models.py</text>
 <text x="125" y="49" text-anchor="middle" font-size="11">class Item(BaseModel)</text>
-<line x1="125" y1="62" x2="125" y2="106" stroke="currentColor" stroke-width="2" marker-end="url(#tip)"/>
-<text x="240" y="89" font-size="11">dump_openapi.py</text>
-<rect x="20" y="112" width="210" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
-<text x="125" y="139" text-anchor="middle" font-size="13">openapi.json</text>
-<line x1="125" y1="154" x2="125" y2="198" stroke="currentColor" stroke-width="2" marker-end="url(#tip)"/>
-<text x="240" y="181" font-size="11">openapi-typescript</text>
-<rect x="20" y="204" width="210" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
-<text x="125" y="231" text-anchor="middle" font-size="13">src/api-types.ts</text>
-<line x1="125" y1="246" x2="125" y2="290" stroke="currentColor" stroke-width="2" marker-end="url(#tip)"/>
-<text x="240" y="273" font-size="11">re-exported by types.ts</text>
-<rect x="20" y="296" width="210" height="54" fill="none" stroke="currentColor" stroke-width="2"/>
-<text x="125" y="319" text-anchor="middle" font-size="13">src/ItemList.tsx</text>
-<text x="125" y="337" text-anchor="middle" font-size="11">useState&lt;Item[]&gt;</text>
-<line x1="20" y1="371" x2="50" y2="371" stroke="currentColor" stroke-width="2"/>
-<text x="57" y="375" font-size="11">written by hand</text>
-<line x1="170" y1="371" x2="200" y2="371" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
-<text x="207" y="375" font-size="11">generated</text>
+<line x1="125" y1="62" x2="125" y2="92" stroke="currentColor" stroke-width="2" marker-end="url(#tip)"/>
+<text x="240" y="81" font-size="11">dump_openapi.py</text>
+<rect x="20" y="98" width="210" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="125" y="125" text-anchor="middle" font-size="13">openapi.json</text>
+<line x1="125" y1="140" x2="125" y2="170" stroke="currentColor" stroke-width="2" marker-end="url(#tip)"/>
+<text x="240" y="159" font-size="11">openapi-typescript</text>
+<rect x="20" y="176" width="210" height="42" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="125" y="203" text-anchor="middle" font-size="13">src/api-types.ts</text>
+<line x1="125" y1="218" x2="125" y2="248" stroke="currentColor" stroke-width="2" marker-end="url(#tip)"/>
+<text x="240" y="237" font-size="11">re-exported by types.ts</text>
+<rect x="20" y="254" width="210" height="54" fill="none" stroke="currentColor" stroke-width="2"/>
+<text x="125" y="277" text-anchor="middle" font-size="13">src/ItemList.tsx</text>
+<text x="125" y="295" text-anchor="middle" font-size="11">useState&lt;Item[]&gt;</text>
+<line x1="20" y1="328" x2="50" y2="328" stroke="currentColor" stroke-width="2"/>
+<text x="57" y="332" font-size="11">written by hand</text>
+<line x1="170" y1="328" x2="200" y2="328" stroke="currentColor" stroke-width="2" stroke-dasharray="5 4"/>
+<text x="207" y="332" font-size="11">generated</text>
 </svg>
 <figcaption>The shape is authored once, in Python. Everything downstream is derived from it.</figcaption>
 </figure>
@@ -417,9 +428,9 @@ if either file is stale. The two type systems are now working together
 automatically: Python defines the shape, TypeScript derives it.
 
 Switching over immediately caught a mistake in the version we had been keeping
-by hand. It said `description: string | null`, required. The schema says
-`description?:`, optional, because the field has a default. Small, but exactly
-the kind of thing that drifts unnoticed.
+by hand. It said `description: string | null`, required. The generated one says
+`description?:`, optional, because the schema never promises the field will be
+there. Small, but exactly the kind of thing that drifts unnoticed.
 
 There are a few tools for this, and they differ mostly in how much they hand
 you. Weekly downloads and versions as of August 2026:
@@ -449,16 +460,15 @@ job listings.
 tRPC removes the boundary instead of describing it, but only works if both ends
 are TypeScript, which rules it out here.
 
-HTMX skips the JSON API entirely and swaps in server-rendered HTML, which makes
-the whole question disappear.
+HTMX skips the JSON API entirely and transfers HTML fragments over the wire
+instead of JSON, which is out of scope for this post.
 ///
 
 /// aside | One thing codegen still cannot do
 Generated types agree with the schema, but they are erased before the code runs,
 so nothing checks the response itself. If the server ever sends data that does
 not match its own schema, a fully typed client accepts it without complaint. Zod
-at the fetch boundary is the usual answer. Not the same problem as drift, and
-not something I needed here.
+at the fetch boundary is a tool for this that I am not yet familiar with.
 ///
 
 ---
@@ -480,19 +490,6 @@ So: yes, these two languages work well from front to back today --- like a
 mullet! React and FastAPI are a good pairing, and the thing that actually makes
 it feel like one stack instead of two is generating the frontend's types from
 the backend's schema instead of typing them twice.
-
-/// aside | Off to one side: concurrency
-Every I/O call in Node's event loop is async out of the box. Python added async
-later, and the seam between sync and async code runs through the whole
-ecosystem. FastAPI sits right on it: routes can be `def` or `async def`, and
-putting blocking work in an `async def` handler stalls the event loop for every
-other request the process is serving, not just that one.
-
-The GIL is the other half of that story, keeping multi-threaded Python off more
-than one core at a time. Free-threaded builds landed experimentally in 3.13 and
-became officially supported in 3.14, which is what this repo runs on, so that
-may not stay true for long.
-///
 
 Thoughts, corrections, questions, suggestions are all welcome. Please feel free
 to reach out.

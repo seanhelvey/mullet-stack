@@ -1,9 +1,8 @@
-/* The Mullet Stack — riso-printed fanzine.
-   Inlined into zine.html by build.py; re-run `uv run zine/build.py` after
+/* The Mullet Stack.
+   Inlined into index.html by build.py; re-run `uv run guide/build.py` after
    editing. Code block colors come from Pygments, not from here.
 
-   Two spot colors, the way a real risograph zine prints: pink for the party
-   out front, blue for the business in the back. */
+   Two spot colors: pink for the front end, blue for the back. */
 
 :root {
   --ink: #14110f;
@@ -14,9 +13,9 @@
   --party: #d81f63;   /* front / JavaScript */
   --business: #1f5fd0; /* back / Python */
 
-  /* 'Lato Zine' is embedded by build.py as a data URI; the rest is
+  /* 'Lato Display' is embedded by build.py as a data URI; the rest is
      insurance for anyone opening a hand-edited copy. */
-  --display: "Lato Zine", Impact, "Haettenschweiler",
+  --display: "Lato Display", Impact, "Haettenschweiler",
              "Liberation Sans Narrow", "Arial Narrow", sans-serif;
   --body: Georgia, "Bitstream Charter", "Liberation Serif", serif;
   --mono: "Courier New", "DejaVu Sans Mono", monospace;
@@ -147,7 +146,7 @@ h1, h2, h3 {
   text-wrap: balance;
 }
 
-/* Sections in zine.md are `#`; .title is the masthead and opts out. */
+/* Sections in index.md are `#`; .title is the masthead and opts out. */
 h1:not(.title) {
   font-size: clamp(2rem, 6vw, 2.9rem);
   margin: 2.4em 0 0.7em;
@@ -400,7 +399,7 @@ th {
   }
 }
 
-/* ---- dark: the same zine, photocopied onto black -------------------- */
+/* ---- dark ------------------------------------------------------------ */
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -426,40 +425,28 @@ th {
 
 /* ---- paper ---------------------------------------------------------- */
 
-/* No `size` here on purpose: hardcoding A4 makes a Letter printer scale the
-   whole page down to fit, which shrinks the type and inflates every margin.
-   Leaving it out uses whatever paper the print dialog is set to. */
-/* No `size`: hardcoding A4 makes a Letter printer scale the page down, which
-   shrinks the type and inflates every margin.
+/* ---- paper ----------------------------------------------------------- */
 
-   Top and bottom margins have to live here, because @page applies to every
-   sheet. Body padding only pads the first page's top and the last page's
-   bottom, so relying on it puts every page in between hard against the paper
-   edge. The side margins are doubled up in body padding as insurance. */
+/* Not optimised for print, just made not to embarrass itself: no ink-flooded
+   panels, no clipped edges, nothing that only works on a screen. */
 @page {
-  margin: 15mm 8mm;
+  margin: 15mm 12mm;
 }
 
 @media print {
-  /* The spot colors stay: "print" is usually Save as PDF, read on a screen.
-     On a mono printer they drop to grey, which still reads fine. */
   :root {
     --ink: #000;
     --paper: #fff;
-    --paper-2: #f0ece2;
-    --rule: #9a9382;
+    --paper-2: #fff;
+    --rule: #999;
   }
 
-  /* Side margins only. Survives a print dialog set to "Margins: None", which
-     zeroes @page and would otherwise run the text off the edge. */
   body {
     max-width: none;
-    padding: 0 7mm;
+    padding: 0;
     font-size: 10.5pt;
   }
 
-  /* No filled panels anywhere on paper — a solid masthead is most of a
-     toner cartridge. The title carries the page on type and a rule instead. */
   .masthead {
     margin: 0 0 8mm;
     padding: 0 0 6mm;
@@ -468,81 +455,23 @@ th {
     border-bottom: 4pt solid #000;
     box-shadow: none;
     clip-path: none;
-    break-inside: avoid;
   }
 
-  .masthead .title {
-    font-size: 3.6rem;
-  }
-
+  .masthead .title { font-size: 3.4rem; }
   .masthead .subtitle { color: #000; }
   .masthead .byline { color: #444; border-top-color: #bbb; }
 
-  .contents {
-    border-top-width: 4pt;
-    break-inside: avoid;
-    margin-bottom: 2em;
-  }
+  /* Long lines must wrap; paper cannot scroll. */
+  .highlight { overflow: visible; font-size: 0.75em; }
+  .highlight pre,
+  .highlight code { white-space: pre-wrap; overflow-wrap: break-word; }
 
-  /* Sections flow rather than each claiming a fresh page — forcing breaks
-     stranded short sections on mostly-blank pages. Headings still refuse to
-     be the last thing on a page, and paragraphs won't leave single lines
-     behind. */
+  .admonition { transform: none; border: 1pt solid #000; border-left-width: 4pt; }
+  .diagram svg { max-width: 24em; }
+
   h1, h2, h3 { break-after: avoid; }
-  h1:not(.title) { margin-top: 2.4em; }
   p, li { orphans: 3; widows: 3; }
 
-  /* Short things stay whole. Code listings are long enough that refusing to
-     break them leaves craters at the bottom of the page, so let them run over
-     and keep a few lines together on each side of the break instead. */
-  blockquote, table, .diagram { break-inside: avoid; }
-
-  /* Long asides strand most of a page when they refuse to split, and a box
-     continuing over a page break reads fine. */
-  .admonition { break-inside: auto; }
-  .admonition p { orphans: 3; widows: 3; }
-
-  /* Sized by printed HEIGHT, not screen width. An unbreakable block taller
-     than about a third of the column will strand the rest of the page when
-     it does not fit, so the tall one is capped well below that. */
-  .diagram { margin: 1.6em 0; }
-  .diagram svg { max-width: 24em; }        /* chain: ~3.5in tall */
-  .diagram--wide svg { max-width: 38em; }  /* timeline: only ~2in tall */
-  .highlight { break-inside: auto; orphans: 4; widows: 4; }
-
-  .admonition,
-  .admonition + .admonition {
-    transform: none;
-    background: none;
-    border: 1.5pt solid #000;
-    border-left-width: 5pt;
-  }
-
-  /* Pygments and the base styles both fill these; outline them instead. */
-  .highlight,
-  .highlight pre,
-  code,
-  th {
-    background: none;
-  }
-
-  code { padding: 0; }
-
-  /* Paper cannot scroll: long lines must wrap or they are simply lost off
-     the right edge. The wrap has to land on the <pre>, not the wrapper. */
-  .highlight {
-    overflow: visible;
-    font-size: 0.75em;
-  }
-
-  .highlight pre,
-  .highlight code {
-    white-space: pre-wrap;
-    overflow-wrap: break-word;
-  }
-
-  /* Same reason as the phone rules: a hanging indent inside <pre> pushes
-     every line but the first, which fakes indentation the code doesn't have. */
-
+  .contents,
   hr { display: none; }
 }

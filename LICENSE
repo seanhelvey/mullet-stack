@@ -4,9 +4,9 @@ This repository contains two kinds of work, licensed separately.
 CODE — MIT License
 ================================================================================
 
-Applies to everything except zine/zine.md and zine/fonts/: the FastAPI backend
-(app/backend/), the React frontend (app/frontend/), the zine build tooling
-(zine/build.py, zine/check_snippets.py, zine/style.css), and the CI config.
+Applies to everything except guide/index.md and guide/fonts/: the FastAPI
+backend (app/backend/), the React frontend (app/frontend/), the build tooling
+(guide/build.py, guide/check_snippets.py, guide/style.css), and the CI config.
 
 Copyright (c) 2026 Sean Helvey
 
@@ -29,10 +29,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ================================================================================
-THE ZINE'S TEXT — CC BY 4.0
+THE PROSE — CC BY 4.0
 ================================================================================
 
-Applies to zine/zine.md and the prose of the rendered zine/zine.html.
+Applies to guide/index.md and the prose of the rendered guide/index.html.
 
 Copyright (c) 2026 Sean Helvey, licensed under the Creative Commons
 Attribution 4.0 International License. You may share and adapt it, including
@@ -41,14 +41,14 @@ were made.
 
 Full text: https://creativecommons.org/licenses/by/4.0/
 
-(Code snippets embedded in the zine are MIT, as above — quoting them carries
+(Code snippets embedded in the prose are MIT, as above; quoting them carries
 no attribution requirement.)
 
 ================================================================================
 THIRD-PARTY
 ================================================================================
 
-zine/fonts/lato-black-subset.woff2 is a subset of Lato Black by Łukasz
+guide/fonts/lato-black-subset.woff2 is a subset of Lato Black by Łukasz
 Dziedzic, used and redistributed under the SIL Open Font License 1.1. Its full
-license text is in zine/fonts/LICENSE-Lato.txt and is not superseded by
+license text is in guide/fonts/LICENSE-Lato.txt and is not superseded by
 anything above.

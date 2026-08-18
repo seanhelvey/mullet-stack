@@ -1,7 +1,7 @@
 name: CI
 
-# The zine's central claim is that every snippet comes from code that actually
-# runs. These jobs are what keep that honest.
+# The guide's central claim is that every snippet comes from code that
+# actually runs. These jobs are what keep that honest.
 
 on:
   push:
@@ -55,7 +55,7 @@ jobs:
           npm run generate:types
           git diff --exit-code -- src/api-types.ts
 
-  zine:
+  guide:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -63,17 +63,17 @@ jobs:
         with:
           enable-cache: true
 
-      # Every snippet in zine.md that names a source file must still match
+      # Every snippet in index.md that names a source file must still match
       # that file. This is the check that would have caught the CORS
       # middleware and the fetch URL drifting out of the prose.
       - name: Snippets match the source they claim
-        run: python3 zine/check_snippets.py
+        run: python3 guide/check_snippets.py
 
-      # zine.html is committed so a clone is readable without a build step;
-      # this fails if someone edits zine.md and forgets to rebuild.
+      # index.html is committed so a clone is readable without a build step;
+      # this fails if someone edits index.md and forgets to rebuild.
       # --locked pins the renderer via build.py.lock, so the check reacts to
       # your edits rather than to an unrelated Pygments release.
-      - name: Committed zine.html is up to date
+      - name: Committed index.html is up to date
         run: |
-          uv run --locked zine/build.py
-          git diff --exit-code -- zine/zine.html
+          uv run --locked guide/build.py
+          git diff --exit-code -- guide/index.html

@@ -1,36 +1,34 @@
 # The Mullet Stack
 
-JavaScript in the front, Python in the back. A zine built by shipping one tiny
-feature (fetching a list of items) across both, with a real FastAPI backend and
-a real React frontend behind every snippet in the text.
+JavaScript in the front, Python in the back. A short field guide built by
+shipping one tiny feature (fetching a list of items) across both, with a real
+FastAPI backend and a real React frontend behind every snippet in the text.
 
-## Read the zine
+## Read it
 
 Three ways, all zero-setup:
 
-- **[📖 Read it online](https://seanhelvey.github.io/mullet-stack/zine/zine.html)**
-  is the designed version, no clone required. Want a PDF or a paper copy? Print
-  it (Ctrl/Cmd+P → Save as PDF); it has a print stylesheet, so it comes out
-  looking like a zine rather than a screenshot of a webpage.
-- **From a clone.** Open [`zine/zine.html`](zine/zine.html). It's committed to
-  the repo, so it's there the moment you clone: one self-contained file, no
+- **[📖 Read it online](https://seanhelvey.github.io/mullet-stack/guide/)** is
+  the designed version, no clone required.
+- **From a clone.** Open [`guide/index.html`](guide/index.html). It's committed
+  to the repo, so it's there the moment you clone: one self-contained file, no
   build, no server, no dependencies.
-- **On GitHub.** [`zine/zine.md`](zine/zine.md) is the source and reads fine
+- **On GitHub.** [`guide/index.md`](guide/index.md) is the source and reads fine
   as plain Markdown. The only thing GitHub can't render is the `/// aside`
   sidebars, which show up as literal `///` markers; they're proper boxes in
-  `zine.html`.
+  `index.html`.
 
 Everything else below is optional extra credit, not required reading.
 
 ## Layout
 
 ```
-zine/
-  zine.md             the zine, in Markdown (the source of truth)
-  zine.html           the same zine, readable in a browser and printable
-  build.py            renders zine.md + style.css -> one self-contained zine.html
+guide/
+  index.md            the source of truth, in Markdown
+  index.html          the rendered page, committed so a clone is readable
+  build.py            renders index.md + style.css -> one self-contained file
   check_snippets.py   fails if a snippet drifts from the file it names
-  style.css           the riso-fanzine look: screen, dark, and paper
+  style.css           the look, in light and dark
   fonts/              display face, subset and embedded (SIL OFL, license included)
 app/backend/          FastAPI + Pydantic, serving GET /items
   openapi.json        the schema, dumped from the app
@@ -43,8 +41,8 @@ The frontend's types are generated from the backend's schema rather than typed
 twice. Python defines the shape, TypeScript derives it.
 
 CI runs both test suites, type-checks and builds the frontend, and fails if any
-generated file is stale: `openapi.json`, `src/api-types.ts`, or `zine.html`. It
-also verifies every snippet in the zine still matches the source file it names.
+generated file is stale: `openapi.json`, `src/api-types.ts`, or `index.html`. It
+also verifies every snippet still matches the source file it names.
 
 ## Running the app
 
@@ -79,12 +77,12 @@ cd app/backend  && uv run python scripts/dump_openapi.py   # -> openapi.json
 cd app/frontend && npm run generate:types                  # -> src/api-types.ts
 ```
 
-## Rebuilding the zine
+## Rebuilding the page
 
-Only needed if you edit `zine.md` or `style.css`. One command, no setup:
+Only needed if you edit `index.md` or `style.css`. One command, no setup:
 
 ```bash
-uv run --locked zine/build.py
+uv run --locked guide/build.py
 ```
 
 `build.py` declares its own dependencies inline ([PEP 723](https://peps.python.org/pep-0723/)),
@@ -94,7 +92,7 @@ added to your system. The script inlines the stylesheet, the syntax-highlighting
 theme and the display font, so the output stays a single portable file you can
 email, host anywhere, or print.
 
-Writing an aside, the boxes taped into the margins, looks like this:
+Writing an aside, the boxes set off from the main text, looks like this:
 
 ```markdown
 /// aside | The road not taken: Django
@@ -104,8 +102,8 @@ Django would be the batteries-included alternative here.
 
 ## License
 
-Code is [MIT](LICENSE); the zine's text is CC BY 4.0. The embedded display font
-is Lato, under the SIL OFL, see [`zine/fonts/`](zine/fonts/).
+Code is [MIT](LICENSE); the prose is CC BY 4.0. The embedded display font is
+Lato, under the SIL OFL, see [`guide/fonts/`](guide/fonts/).
 
 ## Why this repo exists
 
@@ -117,7 +115,5 @@ Interview prep, but not only that:
   decisions visible.
 - **Current conventions.** Writing it down forces a pass over what's actually
   current rather than what we picked up years ago.
-- **Something to print.** It renders to a zine we can read on a piece of paper,
-  away from a screen.
 
-Full framing is in the zine's opening section.
+Full framing is in the opening section.

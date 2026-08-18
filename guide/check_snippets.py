@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Fail if a code snippet in zine.md has drifted from the file it claims.
+"""Fail if a code snippet in index.md has drifted from the file it claims.
 
-The zine's whole credibility rests on "lifted from code that actually runs".
+The guide's whole credibility rests on "lifted from code that actually runs".
 This is the check that keeps that true, and it is only a check — the snippets
-stay written out in zine.md so the Markdown still reads on GitHub.
+stay written out in index.md so the Markdown still reads on GitHub.
 
 A snippet opts in by naming its source file in the first line, as a comment:
 
@@ -12,12 +12,12 @@ A snippet opts in by naming its source file in the first line, as a comment:
     ...
     ```
 
-Snippets may be trimmed — the zine often shows only the lines under
+Snippets may be trimmed: the guide often shows only the lines under
 discussion — so the rule is subsequence, not equality: every non-blank line of
 the snippet must appear in the source file, in order. Omitting lines is fine;
 inventing or editing one is not.
 
-Needs no dependencies: run it with plain `python3 zine/check_snippets.py`.
+Needs no dependencies: run it with plain `python3 guide/check_snippets.py`.
 """
 
 import pathlib
@@ -30,7 +30,7 @@ MARKER = re.compile(r"^(?:#|//)\s*(\S+\.(?:py|ts|tsx))\s*$")
 
 
 def source_for(named: str) -> pathlib.Path:
-    """zine.md names files relative to their own app; .py is the backend."""
+    """index.md names files relative to their own app; .py is the backend."""
     app = "backend" if named.endswith(".py") else "frontend"
     return ROOT / "app" / app / named
 
@@ -45,7 +45,7 @@ def drift(snippet: list[str], source: list[str]) -> str | None:
 
 
 def main() -> int:
-    text = (ROOT / "zine" / "zine.md").read_text(encoding="utf-8")
+    text = (ROOT / "guide" / "index.md").read_text(encoding="utf-8")
     checked = failures = 0
 
     for _lang, block in FENCE.findall(text):

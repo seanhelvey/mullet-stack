@@ -2,9 +2,9 @@
 # requires-python = ">=3.12"
 # dependencies = ["markdown>=3.6", "pymdown-extensions>=10.9", "pygments>=2.18"]
 # ///
-"""Render zine.md into a single self-contained zine.html.
+"""Render index.md into a single self-contained index.html.
 
-Run it with `uv run zine/build.py` — uv reads the dependency block above and
+Run it with `uv run guide/build.py` — uv reads the dependency block above and
 fetches the packages into a throwaway environment, so there is nothing to
 install and no virtualenv to manage.
 
@@ -22,7 +22,7 @@ HERE = pathlib.Path(__file__).parent
 LIGHT, DARK = "friendly", "github-dark"
 
 EXTENSIONS = [
-    "meta",              # the --- front matter block at the top of zine.md
+    "meta",              # the --- front matter block at the top of index.md
     "smarty",            # straight quotes -> curly
     "toc",               # heading anchors + the contents list
     "tables",
@@ -60,10 +60,10 @@ PAGE = """<!doctype html>
 
 
 def font_face():
-    """Embed the display face so the zine looks the same on every machine.
+    """Embed the display face so the page looks the same on every machine.
 
     fonts/ holds a Latin subset of Lato Black (SIL OFL, license alongside it).
-    Inlining it as a data URI keeps zine.html a single portable file and means
+    Inlining it as a data URI keeps index.html a single portable file and means
     the design never silently degrades to whatever sans the reader happens to
     have installed.
     """
@@ -71,7 +71,7 @@ def font_face():
     encoded = base64.b64encode(woff2).decode("ascii")
     return (
         "@font-face {\n"
-        "  font-family: 'Lato Zine';\n"
+        "  font-family: 'Lato Display';\n"
         "  font-style: normal;\n"
         "  font-weight: 900;\n"
         "  font-display: swap;\n"
@@ -116,15 +116,15 @@ def main():
         extension_configs={
             "pymdownx.highlight": {"pygments_style": LIGHT, "guess_lang": False},
             # `aside` isn't a built-in admonition type; register it so
-            # `/// aside | Title` blocks in zine.md render as sidebars.
+            # `/// aside | Title` blocks in index.md render as sidebars.
             "pymdownx.blocks.admonition": {"types": ["aside"]},
         },
     )
-    body = md.convert((HERE / "zine.md").read_text(encoding="utf-8"))
+    body = md.convert((HERE / "index.md").read_text(encoding="utf-8"))
     meta = {key: value[0].strip('"') for key, value in md.Meta.items()}
 
     page = PAGE.format(
-        title=html.escape(meta.get("title", "Zine")),
+        title=html.escape(meta.get("title", "Untitled")),
         subtitle=html.escape(meta.get("subtitle", "")),
         byline=html.escape(" · ".join(meta[k] for k in ("author", "date") if k in meta)),
         toc=md.toc,
@@ -132,7 +132,7 @@ def main():
         css=stylesheet(),
     )
 
-    out = HERE / "zine.html"
+    out = HERE / "index.html"
     out.write_text(page, encoding="utf-8")
     print(f"wrote {out.relative_to(HERE.parent)} ({len(page):,} bytes)")
 

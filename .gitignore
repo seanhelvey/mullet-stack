@@ -7,9 +7,9 @@ __pycache__/
 node_modules/
 dist/
 
-# zine/zine.html is intentionally committed — cloning the repo should be
-# enough to read the zine, no build step required.
-zine/zine.pdf
+# guide/index.html is intentionally committed — cloning the repo should be
+# enough to read it, no build step required.
+guide/index.pdf
 
 # Test / tooling caches
 .pytest_cache/
