@@ -465,21 +465,21 @@ not something I needed here.
 
 # 6. Conclusion
 
-Both sides have annotations that look almost identical and do different jobs.
-Python's do nothing on their own. Pydantic is what makes them real, and it
-checks at runtime, at the edge of the API. TypeScript's get checked everywhere
-while you build, then stripped out before anything runs.
-
-That difference is what lets the two ends agree. Pydantic's types are real
-enough to describe, so FastAPI publishes a schema from the back, and the front
-derives its types from it and checks them at build time.
-
 When I started this project I was most curious to see a juxtaposition of the
-differences in syntax between modern JavaScript and Python. What turned out to
-matter more is the strong versus weak split underneath. Both languages are
-dynamic, but Python refuses to add a number to a string and JavaScript happily
-concatenates. Neither Pydantic nor TypeScript changes that. They each bolt a
-checking layer on top, at opposite ends of the program's life.
+differences in syntax, tooling, and ecosystems across modern JavaScript and
+Python. I figured FastAPI with Pydantic and React with TypeScript were the
+obvious picks, but wasn't quite sure how they'd fit together. I learned that
+their annotations look almost identical but do very different jobs.
+
+TypeScript's get checked everywhere while you build, then stripped out before
+anything runs. Python's do nothing on their own. Pydantic is what makes them
+real, and it checks at runtime, at the edge of the API. FastAPI publishes a
+schema, and the frontend can derive types based on that at build time.
+
+So: yes, these two languages work well from front to back today --- like a
+mullet! React and FastAPI are a good pairing, and the thing that actually makes
+it feel like one stack instead of two is generating the frontend's types from
+the backend's schema instead of typing them twice.
 
 /// aside | Off to one side: concurrency
 Every I/O call in Node's event loop is async out of the box. Python added async
@@ -493,3 +493,6 @@ than one core at a time. Free-threaded builds landed experimentally in 3.13 and
 became officially supported in 3.14, which is what this repo runs on, so that
 may not stay true for long.
 ///
+
+Thoughts, corrections, questions, suggestions are all welcome. Please feel free
+to reach out.

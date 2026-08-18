@@ -1231,19 +1231,19 @@ not something I needed here.</p>
 </div>
 <hr />
 <h1 id="6-conclusion">6. Conclusion</h1>
-<p>Both sides have annotations that look almost identical and do different jobs.
-Python&rsquo;s do nothing on their own. Pydantic is what makes them real, and it
-checks at runtime, at the edge of the API. TypeScript&rsquo;s get checked everywhere
-while you build, then stripped out before anything runs.</p>
-<p>That difference is what lets the two ends agree. Pydantic&rsquo;s types are real
-enough to describe, so FastAPI publishes a schema from the back, and the front
-derives its types from it and checks them at build time.</p>
 <p>When I started this project I was most curious to see a juxtaposition of the
-differences in syntax between modern JavaScript and Python. What turned out to
-matter more is the strong versus weak split underneath. Both languages are
-dynamic, but Python refuses to add a number to a string and JavaScript happily
-concatenates. Neither Pydantic nor TypeScript changes that. They each bolt a
-checking layer on top, at opposite ends of the program&rsquo;s life.</p>
+differences in syntax, tooling, and ecosystems across modern JavaScript and
+Python. I figured FastAPI with Pydantic and React with TypeScript were the
+obvious picks, but wasn&rsquo;t quite sure how they&rsquo;d fit together. I learned that
+their annotations look almost identical but do very different jobs.</p>
+<p>TypeScript&rsquo;s get checked everywhere while you build, then stripped out before
+anything runs. Python&rsquo;s do nothing on their own. Pydantic is what makes them
+real, and it checks at runtime, at the edge of the API. FastAPI publishes a
+schema, and the frontend can derive types based on that at build time.</p>
+<p>So: yes, these two languages work well from front to back today &mdash; like a
+mullet! React and FastAPI are a good pairing, and the thing that actually makes
+it feel like one stack instead of two is generating the frontend&rsquo;s types from
+the backend&rsquo;s schema instead of typing them twice.</p>
 <div class="admonition aside">
 <p class="admonition-title">Off to one side: concurrency</p>
 <p>Every I/O call in Node&rsquo;s event loop is async out of the box. Python added async
@@ -1256,5 +1256,7 @@ than one core at a time. Free-threaded builds landed experimentally in 3.13 and
 became officially supported in 3.14, which is what this repo runs on, so that
 may not stay true for long.</p>
 </div>
+<p>Thoughts, corrections, questions, suggestions are all welcome. Please feel free
+to reach out.</p>
 </body>
 </html>
