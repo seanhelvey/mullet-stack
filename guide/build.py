@@ -123,10 +123,17 @@ def main():
     body = md.convert((HERE / "index.md").read_text(encoding="utf-8"))
     meta = {key: value[0].strip('"') for key, value in md.Meta.items()}
 
+    byline = html.escape(" · ".join(meta[k] for k in ("author", "date") if k in meta))
+    # The page gets read standalone (linked from elsewhere, GitHub Pages),
+    # so the masthead needs its own way back to the repo, not just a mention
+    # of "this repo" in the prose.
+    if repo := meta.get("repo"):
+        byline += f' · <a href="{html.escape(repo)}">Source on GitHub</a>'
+
     page = PAGE.format(
         title=html.escape(meta.get("title", "Untitled")),
         subtitle=html.escape(meta.get("subtitle", "")),
-        byline=html.escape(" · ".join(meta[k] for k in ("author", "date") if k in meta)),
+        byline=byline,
         toc=md.toc,
         body=body,
         css=stylesheet(),

@@ -3,6 +3,7 @@ title: "The Mullet Stack"
 subtitle: "JavaScript in the front, Python in the back."
 author: "Sean Helvey"
 date: "Accurate as of August 2026. Dependencies will have drifted by the time you read this"
+repo: "https://github.com/seanhelvey/mullet-stack"
 ---
 
 # Why this exists
