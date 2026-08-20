@@ -28,7 +28,8 @@ together into one stack?
 The snippets ahead are windows into the repo rather than a build-along, so the
 fastest way to follow is to clone it, start both servers, and poke at the files
 as you read. It is a backend that returns a list of items, and a frontend that
-fetches it. The example code is in this repo (`app/backend`, `app/frontend`).
+fetches it. The example code is in [this repo](https://github.com/seanhelvey/mullet-stack)
+(`app/backend`, `app/frontend`).
 Feedback is welcome!
 
 ---
@@ -168,7 +169,8 @@ other request the process is serving, not just that one.
 
 The GIL is the other half of that story, keeping multi-threaded Python off more
 than one core at a time. Free-threaded builds landed experimentally in 3.13 and
-became officially supported in 3.14, which is what this repo runs on, so that
+became officially supported in 3.14, which is what [this repo](https://github.com/seanhelvey/mullet-stack)
+runs on, so that
 may not stay true for long.
 ///
 
